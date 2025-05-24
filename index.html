@@ -1,19 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-        <!-- 音乐元素 -->
-    <audio id="red-audio" loop>
-        <source src="red-music.mp3" type="audio/mpeg">
-        (红色方音乐文件)
-    </audio>
-    <audio id="blue-audio" loop>
-        <source src="blue-music.mp3" type="audio/mpeg">
-        (蓝色方音乐文件)
-    </audio>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hanfeng-bp-emulator</title>
+    <title>韩枫BP模拟器v1.5</title>
     <style>
         /* 基础样式 */
         body {
@@ -32,34 +22,6 @@
             text-align: center;
             position: relative;
         }
-.music-control {
-    display: inline-block;
-    margin: 0 15px;
-    padding: 5px 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.3s;
-}
-
-#red-control {
-    background-color: rgba(233, 30, 99, 0.2);
-    border: 1px solid #e91e63;
-}
-
-#blue-control {
-    background-color: rgba(63, 81, 181, 0.2);
-    border: 1px solid #3f51b5;
-}
-
-.music-control:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 5px rgba(0,0,0,0.2);
-}
-
-.music-control.playing {
-    font-weight: bold;
-    box-shadow: 0 0 10px currentColor;
-}
 
         .header h1 {
             margin: 0;
@@ -150,40 +112,20 @@
         }
 
         .random-btn {
-    background: linear-gradient(45deg, #9c27b0, #e91e63);
-    color: white;
-    background-size: 200% 200%;
-    animation: gradientChange 15s ease infinite;
-    transition: all 0.5s ease;
-}
+            background-color: #9c27b0;  /* 紫色作为基础色 */
+            color: white;
+            animation: colorChange 1s infinite;  /* 颜色变化动画 */
+        }
 
-/* 加速动画的类 */
-.random-btn.accelerate {
-    animation: gradientChange 7.5s ease infinite; /* 时间减半实现频率翻倍 */
-}
-
-/* 渐变颜色变化动画 */
-@keyframes gradientChange {
-    0% {
-        background-position: 0% 50%;
-        background: linear-gradient(45deg, #9c27b0, #e91e63);
-    }
-    8% {
-        background-position: 100% 50%;
-        background: linear-gradient(45deg, #e91e63, #ff4081);
-    }
-    16% {
-        background-position: 0% 50%;
-        background: linear-gradient(45deg, #ff4081, #ff5722);
-    }
-    /* 其他关键帧保持不变... */
-    100% {
-        background-position: 100% 50%;
-        background: linear-gradient(45deg, #3f51b5, #9c27b0);
-    }
-}
-
-
+        /* 颜色变化动画定义 */
+        @keyframes colorChange {
+            0% { background-color: #9c27b0; }
+            20% { background-color: #3f51b5; }
+            40% { background-color: #03a9f4; }
+            60% { background-color: #009688; }
+            80% { background-color: #8bc34a; }
+            100% { background-color: #ffc107; }
+        }
 
         .card-pool {
             display: grid;
@@ -378,40 +320,6 @@
             display: none;
         }
 
-
-    /* ▼▼▼ 插入音乐控制CSS样式 ▼▼▼ */
-    .music-control {
-        display: inline-block;
-        margin: 0 15px;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: all 0.3s;
-    }
-
-    #red-control {
-        background-color: rgba(233, 30, 99, 0.2);
-        border: 1px solid #e91e63;
-    }
-
-    #blue-control {
-        background-color: rgba(63, 81, 181, 0.2);
-        border: 1px solid #3f51b5;
-    }
-
-    .music-control:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 5px rgba(0,0,0,0.2);
-    }
-
-    .music-control.playing {
-        font-weight: bold;
-        box-shadow: 0 0 10px currentColor;
-    }
-    /* ▲▲▲ 插入结束 ▲▲▲ */
-
-    /* ...其他现有样式（如card-pool等）... */
-    .card
         /* 响应式设计 */
         @media (max-width: 1200px) {
             .container {
@@ -425,15 +333,10 @@
     </style>
 </head>
 <body>
-        <div class="header">
-        <div class="author">作者：韩枫</div>
-        <h1>韩枫BP模拟器v1.5</h1>
-        <div class="team-controls">
-            <span id="red-control" class="music-control">红色方</span>
-            <span id="blue-control" class="music-control">蓝色方</span>
-        </div>
+    <div class="header">
+        <h1>韩枫BP模拟器V.1.5</h1>
+        <div class="author">作者：@韩枫有点帅</div>
     </div>
-
     
     <div class="container">
         <div class="red-side">
@@ -1271,52 +1174,8 @@
                 else if (className === 'toggle-names-btn') btn.style.backgroundColor = '#4CAF50';
             });
         }
-        
-        // 修复后的随机按钮代码（确保不影响上传功能）
-document.querySelector('.random-btn')?.addEventListener('click', function() {
-    // 添加安全判断
-    if (!this.classList.contains('accelerate')) {
-        this.classList.add('accelerate');
-        setTimeout(() => {
-            this.classList.remove('accelerate');
-        }, 6000);
-    }
-}, { once: false }); // 确保不会覆盖其他事件
-
-// 音乐控制功能
-document.getElementById('red-control').addEventListener('click', function() {
-    const audio = document.getElementById('red-audio');
-    const blueAudio = document.getElementById('blue-audio');
-    
-    if(audio.paused) {
-        blueAudio.pause();
-        document.getElementById('blue-control').classList.remove('playing');
-        audio.play();
-        this.classList.add('playing');
-    } else {
-        audio.pause();
-        this.classList.remove('playing');
-    }
-});
-
-document.getElementById('blue-control').addEventListener('click', function() {
-    const audio = document.getElementById('blue-audio');
-    const redAudio = document.getElementById('red-audio');
-    
-    if(audio.paused) {
-        redAudio.pause();
-        document.getElementById('red-control').classList.remove('playing');
-        audio.play();
-        this.classList.add('playing');
-    } else {
-        audio.pause();
-        this.classList.remove('playing');
-    }
-});
-
 
         // 启动系统
-        
         init();
     </script>
 
