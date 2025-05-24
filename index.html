@@ -158,11 +158,25 @@
             color: white;
         }
 
-        .random-btn {
-            background-color: #9c27b0;  /* 紫色作为基础色 */
-            color: white;
-            animation: colorChange 1s infinite;  /* 颜色变化动画 */
-        }
+       .random-btn {
+    background-color: #FFD700 !important; /* 常态黄色 */
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+.random-btn.animating {
+    animation: colorChange 1s infinite !important; /* 随机过程中多彩动画 */
+}
+
+.random-btn:active {
+    background-color: #FFA500 !important; /* 点击时橙色 */
+}
+
+.random-btn.disabled {
+    background-color: #cccccc !important; /* 禁用状态灰色 */
+    animation: none !important;
+}
+
 
         /* 颜色变化动画定义 */
         @keyframes colorChange {
@@ -486,101 +500,82 @@
         }
 
         // 开始随机选择
-        function startRandomSelection(side) {
-            if (isRandomAnimating) return;
-            if (selectedSpirits[side].length >= 6) return;
-            
-            const availableSpirits = getAvailableSpirits(side);
-            if (availableSpirits.length === 0) return;
-            
-            isRandomAnimating = true;
-            disableRandomButtons();
-            
-            const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
-            const spiritCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
-            
-            // 随机动画持续时间 (5-8秒)
-            const duration = 5000 + Math.random() * 3000;
-            const startTime = Date.now();
-            const endTime = startTime + duration;
-            
-            // 随机选择最终位置
-            const finalIndex = Math.floor(Math.random() * availableSpirits.length);
-            const finalSpirit = availableSpirits[finalIndex];
-            
-            let currentIndex = 0;
-            let lastHighlighted = null;
-            
-            function animateRandomSelection() {
-                const now = Date.now();
-                const remainingTime = endTime - now;
-                
-                if (remainingTime <= 0) {
-                    // 动画结束，选择最终精灵
-                    if (lastHighlighted) {
-                        lastHighlighted.classList.remove(highlightClass);
-                    }
-                    
-                    const finalCard = document.querySelector(`.spirit-card[data-name="${finalSpirit.name}"]`);
-                    if (finalCard) {
-                        finalCard.classList.add(highlightClass);
-                        
-                        // 短暂显示后添加到选择区域
-                        setTimeout(() => {
-                            finalCard.classList.remove(highlightClass);
-                            selectSpirit(finalSpirit, side);
-                            isRandomAnimating = false;
-                            enableRandomButtons();
-                        }, 500);
-                    } else {
-                        isRandomAnimating = false;
-                        enableRandomButtons();
-                    }
-                    return;
-                }
-                
-                // 继续动画
-                if (lastHighlighted) {
-                    lastHighlighted.classList.remove(highlightClass);
-                }
-                
-                // 选择下一个卡片
-                currentIndex = (currentIndex + 1) % spiritCards.length;
-                const currentCard = spiritCards[currentIndex];
-                currentCard.classList.add(highlightClass);
-                lastHighlighted = currentCard;
-                
-                // 根据剩余时间调整速度 (逐渐变慢)
-                let speed;
-                if (remainingTime > 2000) {
-                    // 前段快速变化
-                    speed = 50 + Math.random() * 50;
-                } else {
-                    // 后段逐渐变慢
-                    const slowdownFactor = remainingTime / 2000;
-                    speed = 100 + slowdownFactor * 200;
-                }
-                
-                setTimeout(animateRandomSelection, speed);
-            }
-            
-            animateRandomSelection();
-        }
+       // 在startRandomSelection函数中修改：
+// 修改startRandomSelection函数
+function startRandomSelection(side) {
+    if (isRandomAnimating) return;
+    if (selectedSpirits[side].length >= 6) return;
+    
+    const availableSpirits = getAvailableSpirits(side);
+    if (availableSpirits.length === 0) return;
+    
+    const randomBtn = side === 'red' ? redRandomBtn : blueRandomBtn;
+    randomBtn.classList.add('animating');
+    isRandomAnimating = true;
+    disableRandomButtons();
+    
+    // 获取所有未被禁用的卡片
+    const allCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
+    if (allCards.length === 0) {
+        finishSelection();
+        return;
+    }
+    
+    // 高亮类名
+    const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
+    
+    // 随机选择动画
+    let iterations = 0;
+    let currentIndex = 0;
+    let intervalId = setInterval(() => {
+        // 移除之前的高亮
+        allCards.forEach(card => card.classList.remove(highlightClass));
         
-        // 获取可用的精灵列表
-        function getAvailableSpirits(side) {
-            return spirits.filter(spirit => {
-                // 检查是否已被当前方选择或禁止
-                const isSelected = selectedSpirits[side].some(s => s.name === spirit.name);
-                const isBanned = bannedSpirits[side].some(s => s.name === spirit.name);
-                
-                // 检查是否已被对方禁止
-                const otherSide = side === 'red' ? 'blue' : 'red';
-                const isBannedByOther = bannedSpirits[otherSide].some(s => s.name === spirit.name);
-                
-                return !isSelected && !isBanned && !isBannedByOther;
-            });
+        // 随机选择下一个
+        currentIndex = Math.floor(Math.random() * allCards.length);
+        allCards[currentIndex].classList.add(highlightClass);
+        
+        iterations++;
+        if (iterations > 15) {
+            clearInterval(intervalId);
+            const finalCard = allCards[currentIndex];
+            const finalSpirit = spirits.find(s => s.name === finalCard.dataset.name);
+            
+            // 结束动画
+            setTimeout(() => {
+                finalCard.classList.remove(highlightClass);
+                selectSpirit(finalSpirit, side);
+                finishSelection();
+            }, 500);
         }
+    }, 100);
+    
+    function finishSelection() {
+        isRandomAnimating = false;
+        randomBtn.classList.remove('animating');
+        randomBtn.style.backgroundColor = '#FFD700';
+        enableRandomButtons();
+    }
+}
+
+// 修改getAvailableSpirits函数
+function getAvailableSpirits(side) {
+    return spirits.filter(spirit => {
+        // 检查是否已被当前方选择或禁止
+        const isSelected = selectedSpirits[side].some(s => s.name === spirit.name);
+        const isBanned = bannedSpirits[side].some(s => s.name === spirit.name);
+        
+        // 检查是否已被对方禁止
+        const otherSide = side === 'red' ? 'blue' : 'red';
+        const isBannedByOther = bannedSpirits[otherSide].some(s => s.name === spirit.name);
+        
+        // 检查卡片是否被禁用
+        const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
+        const isDisabled = card ? card.classList.contains('disabled') : false;
+        
+        return !isSelected && !isBanned && !isBannedByOther && !isDisabled;
+    });
+}
         
         // 禁用随机按钮
         function disableRandomButtons() {
