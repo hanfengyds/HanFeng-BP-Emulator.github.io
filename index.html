@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hanfeng-bp-emulator</title>
-    <link rel="icon" href="tubiao.ico" type="image/x-icon">
+    <title>韩枫BP模拟器v1.5</title>
     <style>
         /* 基础样式 */
         body {
@@ -23,7 +22,54 @@
             text-align: center;
             position: relative;
         }
+/* 头像样式 */
+.avatar {
+    display: inline-block;
+    width: 80px;          /* 增大尺寸 */
+    height: 80px;
+    margin-left: 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    vertical-align: middle;
+    background-color: #f0f0f0; /* 默认背景色 */
+    position: relative;
+}
 
+/* 上传后显示的描边 */
+.avatar.has-image {
+    border: 4px solid #000;
+}
+
+/* 红色方特殊样式 */
+.red-side .avatar.has-image {
+    box-shadow: 0 0 0 3px #ff0000;
+}
+
+/* 蓝色方特殊样式 */
+.blue-side .avatar.has-image {
+    box-shadow: 0 0 0 3px #0066ff;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none; /* 默认隐藏 */
+}
+
+.avatar.has-image img {
+    display: block; /* 上传后显示 */
+}
+
+/* 红色方头像额外红色标记 */
+.red-side .avatar {
+    box-shadow: 0 0 0 2px #ff0000; /* 红色外发光 */
+}
+
+/* 蓝色方头像额外蓝色标记 */
+.blue-side .avatar {
+    box-shadow: 0 0 0 2px #0066ff; /* 蓝色外发光 */
+}
         .header h1 {
             margin: 0;
             font-size: 28px;
@@ -129,15 +175,16 @@
         }
 
         .card-pool {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 10px;
-            min-height: 300px;
-            border: 2px dashed #ccc;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: white;
-        }
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    height: 300px; /* 固定高度 */
+    overflow-y: auto; /* 启用垂直滚动条 */
+    border: 2px dashed #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: white;
+}
 
         .selected-area {
             margin-top: 20px;
@@ -341,7 +388,7 @@
     
     <div class="container">
         <div class="red-side">
-    <h2>红色方</h2>
+    <h2>红色方 <span class="avatar" id="redAvatar"></span></h2>
     <button class="btn select-btn">自选</button>
     <button class="btn ban-btn">禁选</button>
     <button class="btn random-btn" id="redRandomBtn">随机</button>
@@ -366,7 +413,7 @@
         </div>
         
         <div class="blue-side">
-    <h2>蓝色方</h2>
+    <h2>蓝色方 <span class="avatar" id="blueAvatar"></span></h2>
     <button class="btn select-btn">自选</button>
     <button class="btn ban-btn">禁选</button>
     <button class="btn random-btn" id="blueRandomBtn">随机</button>
@@ -1176,8 +1223,84 @@
             });
         }
 
-        // 启动系统
-        init();
+// 头像上传功能
+
+// 初始化
+init();
+setupAvatar();  
+function setupAvatar() {
+    // 创建全局文件input
+    const avatarInput = document.createElement('input');
+    avatarInput.type = 'file';
+    avatarInput.accept = 'image/jpeg,image/png,image/gif';
+    avatarInput.style.display = 'none';
+    document.body.appendChild(avatarInput);
+
+    let currentAvatar = null;
+
+    // 文件选择处理
+    avatarInput.addEventListener('change', (e) => {
+        if (!currentAvatar) return;
+
+        const file = e.target.files[0];
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        
+        if (file && allowedTypes.includes(file.type)) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                currentAvatar.innerHTML = `<img src="${event.target.result}">`;
+                currentAvatar.classList.add('has-image');
+                
+                // 保存到localStorage
+                const side = currentAvatar.id === 'redAvatar' ? 'red' : 'blue';
+                localStorage.setItem(`${side}TeamAvatar`, event.target.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert('请上传 JPG/PNG/GIF 格式图片！');
+        }
+        
+        avatarInput.value = '';
+    });
+
+    // 点击事件处理
+    document.querySelectorAll('.red-side h2, .blue-side h2, .avatar').forEach(el => {
+        el.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            const avatarEl = this.classList.contains('avatar') 
+                ? this 
+                : this.querySelector('.avatar');
+            
+            if (!avatarEl) return;
+
+            // 已有头像则清除
+            if (avatarEl.classList.contains('has-image')) {
+                avatarEl.classList.remove('has-image');
+                avatarEl.innerHTML = '';
+                localStorage.removeItem(avatarEl.id === 'redAvatar' ? 'redTeamAvatar' : 'blueTeamAvatar');
+                return;
+            }
+
+            // 触发文件选择
+            currentAvatar = avatarEl;
+            avatarInput.click();
+        });
+    });
+
+    // 加载保存的头像
+    if (localStorage.getItem('redTeamAvatar')) {
+        const redAvatar = document.getElementById('redAvatar');
+        redAvatar.innerHTML = `<img src="${localStorage.getItem('redTeamAvatar')}">`;
+        redAvatar.classList.add('has-image');
+    }
+    if (localStorage.getItem('blueTeamAvatar')) {
+        const blueAvatar = document.getElementById('blueAvatar');
+        blueAvatar.innerHTML = `<img src="${localStorage.getItem('blueTeamAvatar')}">`;
+        blueAvatar.classList.add('has-image');
+    }
+}
+
     </script>
 
     
