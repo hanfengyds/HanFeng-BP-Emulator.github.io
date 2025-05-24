@@ -1,9 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+        <!-- 音乐元素 -->
+    <audio id="red-audio" loop>
+        <source src="red-music.mp3" type="audio/mpeg">
+        (红色方音乐文件)
+    </audio>
+    <audio id="blue-audio" loop>
+        <source src="blue-music.mp3" type="audio/mpeg">
+        (蓝色方音乐文件)
+    </audio>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>韩枫BP模拟器v1.5完整版</title>
+    <title>韩枫BP模拟器v1.5</title>
     <style>
         /* 基础样式 */
         body {
@@ -22,6 +32,34 @@
             text-align: center;
             position: relative;
         }
+.music-control {
+    display: inline-block;
+    margin: 0 15px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+#red-control {
+    background-color: rgba(233, 30, 99, 0.2);
+    border: 1px solid #e91e63;
+}
+
+#blue-control {
+    background-color: rgba(63, 81, 181, 0.2);
+    border: 1px solid #3f51b5;
+}
+
+.music-control:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+.music-control.playing {
+    font-weight: bold;
+    box-shadow: 0 0 10px currentColor;
+}
 
         .header h1 {
             margin: 0;
@@ -111,6 +149,42 @@
             color: white;
         }
 
+        .random-btn {
+    background: linear-gradient(45deg, #9c27b0, #e91e63);
+    color: white;
+    background-size: 200% 200%;
+    animation: gradientChange 15s ease infinite;
+    transition: all 0.5s ease;
+}
+
+/* 加速动画的类 */
+.random-btn.accelerate {
+    animation: gradientChange 7.5s ease infinite; /* 时间减半实现频率翻倍 */
+}
+
+/* 渐变颜色变化动画 */
+@keyframes gradientChange {
+    0% {
+        background-position: 0% 50%;
+        background: linear-gradient(45deg, #9c27b0, #e91e63);
+    }
+    8% {
+        background-position: 100% 50%;
+        background: linear-gradient(45deg, #e91e63, #ff4081);
+    }
+    16% {
+        background-position: 0% 50%;
+        background: linear-gradient(45deg, #ff4081, #ff5722);
+    }
+    /* 其他关键帧保持不变... */
+    100% {
+        background-position: 100% 50%;
+        background: linear-gradient(45deg, #3f51b5, #9c27b0);
+    }
+}
+
+
+
         .card-pool {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
@@ -193,6 +267,17 @@
             filter: grayscale(80%);
             opacity: 0.7;
             cursor: default;
+        }
+
+        /* 高亮效果 */
+        .spirit-card.highlight-red {
+            box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.7);
+            z-index: 5;
+        }
+        
+        .spirit-card.highlight-blue {
+            box-shadow: 0 0 10px 5px rgba(0, 0, 255, 0.7);
+            z-index: 5;
         }
 
         /* 种族提示框 - 4倍大小 */
@@ -293,6 +378,40 @@
             display: none;
         }
 
+
+    /* ▼▼▼ 插入音乐控制CSS样式 ▼▼▼ */
+    .music-control {
+        display: inline-block;
+        margin: 0 15px;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+
+    #red-control {
+        background-color: rgba(233, 30, 99, 0.2);
+        border: 1px solid #e91e63;
+    }
+
+    #blue-control {
+        background-color: rgba(63, 81, 181, 0.2);
+        border: 1px solid #3f51b5;
+    }
+
+    .music-control:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+
+    .music-control.playing {
+        font-weight: bold;
+        box-shadow: 0 0 10px currentColor;
+    }
+    /* ▲▲▲ 插入结束 ▲▲▲ */
+
+    /* ...其他现有样式（如card-pool等）... */
+    .card
         /* 响应式设计 */
         @media (max-width: 1200px) {
             .container {
@@ -306,23 +425,29 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>韩枫BP模拟器V.1.5</h1>
-        <div class="author">作者：@韩枫有点帅</div>
+        <div class="header">
+        <div class="author">作者：韩枫</div>
+        <h1>韩枫BP模拟器v1.5</h1>
+        <div class="team-controls">
+            <span id="red-control" class="music-control">红色方</span>
+            <span id="blue-control" class="music-control">蓝色方</span>
+        </div>
     </div>
+
     
     <div class="container">
         <div class="red-side">
-            <h2>红色方</h2>
-            <button class="btn select-btn">自选</button>
-            <button class="btn ban-btn">禁选</button>
-            <div class="selected-area">
-                <h3>自选位(<span class="selected-count">0</span>/6)</h3>
-                <div class="selected-slots"></div>
-                <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
-                <div class="banned-slots"></div>
-            </div>
-        </div>
+    <h2>红色方</h2>
+    <button class="btn select-btn">自选</button>
+    <button class="btn ban-btn">禁选</button>
+    <button class="btn random-btn" id="redRandomBtn">随机</button>
+    <div class="selected-area">
+        <h3>自选位(<span class="selected-count">0</span>/6)</h3>
+        <div class="selected-slots"></div>
+        <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
+        <div class="banned-slots"></div>
+    </div>
+</div>
         
         <div class="pool-area">
             <div class="upload-btns">
@@ -337,17 +462,17 @@
         </div>
         
         <div class="blue-side">
-            <h2>蓝色方</h2>
-            <button class="btn select-btn">自选</button>
-            <button class="btn ban-btn">禁选</button>
-            <div class="selected-area">
-                <h3>自选位(<span class="selected-count">0</span>/6)</h3>
-                <div class="selected-slots"></div>
-                <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
-                <div class="banned-slots"></div>
-            </div>
-        </div>
+    <h2>蓝色方</h2>
+    <button class="btn select-btn">自选</button>
+    <button class="btn ban-btn">禁选</button>
+    <button class="btn random-btn" id="blueRandomBtn">随机</button>
+    <div class="selected-area">
+        <h3>自选位(<span class="selected-count">0</span>/6)</h3>
+        <div class="selected-slots"></div>
+        <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
+        <div class="banned-slots"></div>
     </div>
+</div>
 
     <!-- 彩蛋输入框 -->
     <div class="easter-egg-container">
@@ -368,6 +493,7 @@
         let races = [];
         let selectedSpirits = { red: [], blue: [] };
         let bannedSpirits = { red: [], blue: [] };
+        let isRandomAnimating = false; // 随机动画是否正在进行
 
         // DOM元素
         const uploadSpiritBtn = document.querySelector('.upload-spirit');
@@ -377,6 +503,8 @@
         const clearTeamBtn = document.querySelector('.clear-team');
         const clearAllBtn = document.querySelector('.clear-all');
         const cardPool = document.querySelector('.card-pool');
+        const redRandomBtn = document.getElementById('redRandomBtn');
+        const blueRandomBtn = document.getElementById('blueRandomBtn');
 
         // 初始化
         function init() {
@@ -400,6 +528,174 @@
             
             clearTeamBtn.addEventListener('click', clearTeam);
             clearAllBtn.addEventListener('click', clearAll);
+            
+            // 随机按钮事件
+            redRandomBtn.addEventListener('click', () => startRandomSelection('red'));
+            blueRandomBtn.addEventListener('click', () => startRandomSelection('blue'));
+        }
+
+        // 开始随机选择
+        function startRandomSelection(side) {
+            if (isRandomAnimating) return;
+            if (selectedSpirits[side].length >= 6) return;
+            
+            const availableSpirits = getAvailableSpirits(side);
+            if (availableSpirits.length === 0) return;
+            
+            isRandomAnimating = true;
+            disableRandomButtons();
+            
+            const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
+            const spiritCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
+            
+            // 随机动画持续时间 (5-8秒)
+            const duration = 5000 + Math.random() * 3000;
+            const startTime = Date.now();
+            const endTime = startTime + duration;
+            
+            // 随机选择最终位置
+            const finalIndex = Math.floor(Math.random() * availableSpirits.length);
+            const finalSpirit = availableSpirits[finalIndex];
+            
+            let currentIndex = 0;
+            let lastHighlighted = null;
+            
+            function animateRandomSelection() {
+                const now = Date.now();
+                const remainingTime = endTime - now;
+                
+                if (remainingTime <= 0) {
+                    // 动画结束，选择最终精灵
+                    if (lastHighlighted) {
+                        lastHighlighted.classList.remove(highlightClass);
+                    }
+                    
+                    const finalCard = document.querySelector(`.spirit-card[data-name="${finalSpirit.name}"]`);
+                    if (finalCard) {
+                        finalCard.classList.add(highlightClass);
+                        
+                        // 短暂显示后添加到选择区域
+                        setTimeout(() => {
+                            finalCard.classList.remove(highlightClass);
+                            selectSpirit(finalSpirit, side);
+                            isRandomAnimating = false;
+                            enableRandomButtons();
+                        }, 500);
+                    } else {
+                        isRandomAnimating = false;
+                        enableRandomButtons();
+                    }
+                    return;
+                }
+                
+                // 继续动画
+                if (lastHighlighted) {
+                    lastHighlighted.classList.remove(highlightClass);
+                }
+                
+                // 选择下一个卡片
+                currentIndex = (currentIndex + 1) % spiritCards.length;
+                const currentCard = spiritCards[currentIndex];
+                currentCard.classList.add(highlightClass);
+                lastHighlighted = currentCard;
+                
+                // 根据剩余时间调整速度 (逐渐变慢)
+                let speed;
+                if (remainingTime > 2000) {
+                    // 前段快速变化
+                    speed = 50 + Math.random() * 50;
+                } else {
+                    // 后段逐渐变慢
+                    const slowdownFactor = remainingTime / 2000;
+                    speed = 100 + slowdownFactor * 200;
+                }
+                
+                setTimeout(animateRandomSelection, speed);
+            }
+            
+            animateRandomSelection();
+        }
+        
+        // 获取可用的精灵列表
+        function getAvailableSpirits(side) {
+            return spirits.filter(spirit => {
+                // 检查是否已被当前方选择或禁止
+                const isSelected = selectedSpirits[side].some(s => s.name === spirit.name);
+                const isBanned = bannedSpirits[side].some(s => s.name === spirit.name);
+                
+                // 检查是否已被对方禁止
+                const otherSide = side === 'red' ? 'blue' : 'red';
+                const isBannedByOther = bannedSpirits[otherSide].some(s => s.name === spirit.name);
+                
+                return !isSelected && !isBanned && !isBannedByOther;
+            });
+        }
+        
+        // 禁用随机按钮
+        function disableRandomButtons() {
+            redRandomBtn.disabled = true;
+            blueRandomBtn.disabled = true;
+        }
+        
+        // 启用随机按钮
+        function enableRandomButtons() {
+            redRandomBtn.disabled = false;
+            blueRandomBtn.disabled = false;
+        }
+        
+        // 选择精灵
+        function selectSpirit(spirit, side) {
+            if (selectedSpirits[side].length >= 6) return;
+            
+            selectedSpirits[side].push(spirit);
+            updateSelectedSlots();
+            
+            // 禁用卡片
+            const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
+            if (card) {
+                card.classList.add('disabled');
+                
+                // 添加撤回功能
+                const handleDisabledClick = () => {
+                    selectedSpirits[side] = selectedSpirits[side].filter(s => s.name !== spirit.name);
+                    card.classList.remove('disabled');
+                    card.removeEventListener('click', handleDisabledClick);
+                    
+                    // 重新绑定点击事件
+                    const newHandleClick = () => {
+                        if (!currentMode || !currentSide) return;
+                        
+                        const existsInSelected = selectedSpirits[currentSide].some(s => s.name === spirit.name);
+                        const existsInBanned = bannedSpirits[currentSide].some(s => s.name === spirit.name);
+                        if (existsInSelected || existsInBanned) return;
+                        
+                        if (currentMode === 'select') {
+                            if (selectedSpirits[currentSide].length >= 6) return;
+                            
+                            selectedSpirits[currentSide].push(spirit);
+                            updateSelectedSlots();
+                        } else {
+                            if (bannedSpirits[currentSide].length >= 3) return;
+                            
+                            bannedSpirits[currentSide].push(spirit);
+                            updateBannedSlots();
+                        }
+                        
+                        card.classList.add('disabled');
+                        card.removeEventListener('click', newHandleClick);
+                        
+                        // 添加撤回功能
+                        card.addEventListener('click', handleDisabledClick);
+                    };
+                    
+                    card.addEventListener('click', newHandleClick);
+                    
+                    updateSelectedSlots();
+                    updateBannedSlots();
+                };
+                
+                card.addEventListener('click', handleDisabledClick);
+            }
         }
 
         // 批量上传文件
@@ -975,15 +1271,55 @@
                 else if (className === 'toggle-names-btn') btn.style.backgroundColor = '#4CAF50';
             });
         }
+        
+        // 修复后的随机按钮代码（确保不影响上传功能）
+document.querySelector('.random-btn')?.addEventListener('click', function() {
+    // 添加安全判断
+    if (!this.classList.contains('accelerate')) {
+        this.classList.add('accelerate');
+        setTimeout(() => {
+            this.classList.remove('accelerate');
+        }, 6000);
+    }
+}, { once: false }); // 确保不会覆盖其他事件
+
+// 音乐控制功能
+document.getElementById('red-control').addEventListener('click', function() {
+    const audio = document.getElementById('red-audio');
+    const blueAudio = document.getElementById('blue-audio');
+    
+    if(audio.paused) {
+        blueAudio.pause();
+        document.getElementById('blue-control').classList.remove('playing');
+        audio.play();
+        this.classList.add('playing');
+    } else {
+        audio.pause();
+        this.classList.remove('playing');
+    }
+});
+
+document.getElementById('blue-control').addEventListener('click', function() {
+    const audio = document.getElementById('blue-audio');
+    const redAudio = document.getElementById('red-audio');
+    
+    if(audio.paused) {
+        redAudio.pause();
+        document.getElementById('red-control').classList.remove('playing');
+        audio.play();
+        this.classList.add('playing');
+    } else {
+        audio.pause();
+        this.classList.remove('playing');
+    }
+});
+
 
         // 启动系统
+        
         init();
     </script>
 
-    <!-- 新增的底部链接（固定在页面正下方，蓝色带下划线） -->
-    <div style="position: fixed; bottom: 10px; left: 0; right: 0; text-align: center; padding: 10px 0; background: rgba(255,255,255,0.8); z-index: 999;">
-        <a href="https://wiki.52poke.com/wiki/" target="_blank" style="text-decoration: underline; color: blue; margin: 0 15px;">神奇宝贝百科（点击跳转）</a>
-        <a href="https://dex.pokemonshowdown.com/" target="_blank" style="text-decoration: underline; color: blue; margin: 0 15px;">pokedex（点击跳转）</a>
-    </div>
+    
 </body>
 </html>
