@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>韩枫BP模拟器v1.5</title>
+    <title>韩枫BP模拟器V.1.5</title>
     <style>
         /* 基础样式 */
         body {
@@ -22,54 +22,7 @@
             text-align: center;
             position: relative;
         }
-/* 头像样式 */
-.avatar {
-    display: inline-block;
-    width: 80px;          /* 增大尺寸 */
-    height: 80px;
-    margin-left: 15px;
-    border-radius: 50%;
-    overflow: hidden;
-    vertical-align: middle;
-    background-color: #f0f0f0; /* 默认背景色 */
-    position: relative;
-}
 
-/* 上传后显示的描边 */
-.avatar.has-image {
-    border: 4px solid #000;
-}
-
-/* 红色方特殊样式 */
-.red-side .avatar.has-image {
-    box-shadow: 0 0 0 3px #ff0000;
-}
-
-/* 蓝色方特殊样式 */
-.blue-side .avatar.has-image {
-    box-shadow: 0 0 0 3px #0066ff;
-}
-
-.avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none; /* 默认隐藏 */
-}
-
-.avatar.has-image img {
-    display: block; /* 上传后显示 */
-}
-
-/* 红色方头像额外红色标记 */
-.red-side .avatar {
-    box-shadow: 0 0 0 2px #ff0000; /* 红色外发光 */
-}
-
-/* 蓝色方头像额外蓝色标记 */
-.blue-side .avatar {
-    box-shadow: 0 0 0 2px #0066ff; /* 蓝色外发光 */
-}
         .header h1 {
             margin: 0;
             font-size: 28px;
@@ -81,10 +34,6 @@
             top: 20px;
             font-style: italic;
             color: white;
-        }
-
-        .easter-egg-container {
-            top: 60px;
         }
 
         .container {
@@ -124,6 +73,14 @@
             gap: 10px;
         }
 
+        .mark-btns {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
         .btn {
             padding: 8px 15px;
             border: none;
@@ -153,32 +110,55 @@
             color: white;
         }
 
-        .upload-race {
-            background-color: #ff9800;
+        .delete-spirit {
+            background-color: #607d8b;
             color: white;
         }
 
-       .random-btn {
-    background-color: #FFD700 !important; /* 常态黄色 */
-    color: #333;
-    transition: background-color 0.3s;
-}
+        .reset-btn {
+            background-color: rgb(32, 172, 247);
+            color: white;
+        }
 
-.random-btn.animating {
-    animation: colorChange 1s infinite !important; /* 随机过程中多彩动画 */
-}
+        .random-btn {
+            background-color: #FFD700 !important;
+            color: #333;
+            transition: background-color 0.3s;
+        }
 
-.random-btn:active {
-    background-color: #FFA500 !important; /* 点击时橙色 */
-}
+        .mark-yellow {
+            background-color: #FFD700;
+            color: #333;
+        }
 
-.random-btn.disabled {
-    background-color: #cccccc !important; /* 禁用状态灰色 */
-    animation: none !important;
-}
+        .mark-purple {
+            background-color: #9c27b0;
+            color: white;
+        }
 
+        .mark-green {
+            background-color: #4caf50;
+            color: white;
+        }
 
-        /* 颜色变化动画定义 */
+        .clear-marks {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .random-btn.animating {
+            animation: colorChange 1s infinite !important;
+        }
+
+        .random-btn:active {
+            background-color: #FFA500 !important;
+        }
+
+        .random-btn.disabled {
+            background-color: #cccccc !important;
+            animation: none !important;
+        }
+
         @keyframes colorChange {
             0% { background-color: #9c27b0; }
             20% { background-color: #3f51b5; }
@@ -189,16 +169,16 @@
         }
 
         .card-pool {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 10px;
-    height: 300px; /* 固定高度 */
-    overflow-y: auto; /* 启用垂直滚动条 */
-    border: 2px dashed #ccc;
-    padding: 15px;
-    border-radius: 8px;
-    background-color: white;
-}
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            height: 300px;
+            overflow-y: auto;
+            border: 2px dashed #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: white;
+        }
 
         .selected-area {
             margin-top: 20px;
@@ -225,23 +205,6 @@
             padding: 10px;
             border-radius: 4px;
             margin-bottom: 15px;
-        }
-
-        .clear-btns {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .clear-team {
-            background-color: #ff5722;
-            color: white;
-        }
-
-        .clear-all {
-            background-color: #2196F3;
-            color: white;
         }
 
         /* 精灵卡片样式 */
@@ -273,6 +236,89 @@
             cursor: default;
         }
 
+        /* 标记样式 */
+        .marked-yellow {
+            position: relative;
+            border: 3px solid #FFD700 !important;
+            order: -3;
+            animation: yellow-glow 2s infinite alternate;
+        }
+
+        /* 皇冠图标样式 */
+        .marked-yellow::after {
+            content: "👑";
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            animation: 
+                crown-breathe 2s infinite ease-in-out,
+                crown-float 3s infinite ease-in-out;
+            text-shadow: 0 0 3px rgba(0,0,0,0.3);
+            transform-origin: center;
+        }
+
+        /* 环绕光效 */
+        .marked-yellow::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0) 70%);
+            z-index: -1;
+            animation: 
+                orbit-glow 4s linear infinite,
+                pulse-glow 3s ease-in-out infinite;
+        }
+        
+        .marked-purple {
+            border: 3px solid #9c27b0 !important;
+            order: -2;
+        }
+        
+        .marked-green {
+            border: 3px solid #4caf50 !important;
+            order: -1;
+        }
+
+        /* 发光动画 */
+        @keyframes yellow-glow {
+            0% { box-shadow: 0 0 10px #FFD700; }
+            50% { box-shadow: 0 0 20px #FFD700; }
+            100% { box-shadow: 0 0 10px #FFD700; }
+        }
+
+        /* 皇冠呼吸效果 */
+        @keyframes crown-breathe {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* 皇冠浮动效果 */
+        @keyframes crown-float {
+            0%, 100% { top: -15px; }
+            50% { top: -20px; }
+        }
+
+        /* 环绕光效动画 */
+        @keyframes orbit-glow {
+            0% { transform: rotate(0deg) translateX(15px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(15px) rotate(-360deg); }
+        }
+
+        /* 脉动光效 */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.05); }
+        }
+
         /* 高亮效果 */
         .spirit-card.highlight-red {
             box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.7);
@@ -282,104 +328,6 @@
         .spirit-card.highlight-blue {
             box-shadow: 0 0 10px 5px rgba(0, 0, 255, 0.7);
             z-index: 5;
-        }
-
-        /* 种族提示框 - 4倍大小 */
-        .race-tooltip {
-            position: absolute;
-            top: -200px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 200px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: 10;
-            padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .race-tooltip img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        /* 彩蛋输入框样式 */
-        .easter-egg-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            display: flex;
-            gap: 5px;
-        }
-        
-        /* 随机主题色样式 */
-        .random-theme {
-            transition: all 0.5s ease;
-        }
-        
-        #easterEggInput {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        
-        /* 透明化样式 - 保留但不再使用 */
-        .transparent-mode {
-            opacity: 0.7;
-        }
-        
-        .transparent-mode .header,
-        .transparent-mode .container,
-        .transparent-mode .toggle-btn-container,
-        .transparent-mode .easter-egg-container {
-            opacity: 0.3;
-            transition: opacity 0.3s;
-        }
-
-        /* 开关按钮样式 */
-        .toggle-btn-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-        
-        .toggle-names-btn {
-            background-color: #4CAF50;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: none;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .toggle-names-btn.off {
-            background-color: #9e9e9e;
-        }
-        
-        .spirit-name {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            text-align: center;
-            padding: 2px 0;
-            font-size: 12px;
-            display: none;
         }
 
         /* 响应式设计 */
@@ -394,7 +342,16 @@
         }
     </style>
 </head>
+
 <body>
+    <!-- 放在<body>标签内的最顶部 -->
+    <div id="easterEggContainer" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+        <input type="text" id="easterEggInput" placeholder="输入彩蛋码"
+            style="padding: 5px; border-radius: 4px; border: 1px solid #000000;">
+        <button id="submitEasterEgg"
+            style="padding: 5px 10px; margin-left: 5px; border-radius: 4px; background: #ffffff; color: #000000; border: none; cursor: pointer;">确认</button>
+    </div>
+
     <div class="header">
         <h1>韩枫BP模拟器V.1.5</h1>
         <div class="author">作者：@韩枫有点帅</div>
@@ -402,52 +359,50 @@
     
     <div class="container">
         <div class="red-side">
-    <h2>红色方 <span class="avatar" id="redAvatar"></span></h2>
-    <button class="btn select-btn">自选</button>
-    <button class="btn ban-btn">禁选</button>
-    <button class="btn random-btn" id="redRandomBtn">随机</button>
-    <div class="selected-area">
-        <h3>自选位(<span class="selected-count">0</span>/6)</h3>
-        <div class="selected-slots"></div>
-        <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
-        <div class="banned-slots"></div>
-    </div>
-</div>
+            <h2>红色方</h2>
+            <div class="action-btns">
+                <button class="btn select-btn">自选</button>
+                <button class="btn ban-btn">禁选</button>
+                <button class="btn random-btn" id="redRandomBtn">随机</button>
+                <button class="btn reset-btn" id="redResetBtn">重置</button>
+            </div>
+            <div class="selected-area">
+                <h3>自选位(<span class="selected-count">0</span>/6)</h3>
+                <div class="selected-slots"></div>
+                <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
+                <div class="banned-slots"></div>
+            </div>
+        </div>
         
         <div class="pool-area">
             <div class="upload-btns">
                 <button class="btn upload-spirit">上传精灵</button>
-                <button class="btn upload-race">上传种族</button>
+                <button class="btn delete-spirit" id="deleteSpiritBtn">删除精灵</button>
             </div>
             <div class="card-pool"></div>
-            <div class="clear-btns">
-                <button class="btn clear-team">清除队伍</button>
-                <button class="btn clear-all">清除全部</button>
+            <div class="mark-btns">
+                <button class="btn mark-yellow" id="markYellowBtn">标黄</button>
+                <button class="btn mark-purple" id="markPurpleBtn">标紫</button>
+                <button class="btn mark-green" id="markGreenBtn">标绿</button>
+                <button class="btn clear-marks" id="clearMarksBtn">撤销</button>
             </div>
         </div>
         
         <div class="blue-side">
-    <h2>蓝色方 <span class="avatar" id="blueAvatar"></span></h2>
-    <button class="btn select-btn">自选</button>
-    <button class="btn ban-btn">禁选</button>
-    <button class="btn random-btn" id="blueRandomBtn">随机</button>
-    <div class="selected-area">
-        <h3>自选位(<span class="selected-count">0</span>/6)</h3>
-        <div class="selected-slots"></div>
-        <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
-        <div class="banned-slots"></div>
-    </div>
-</div>
-
-    <!-- 彩蛋输入框 -->
-    <div class="easter-egg-container">
-        <input type="text" id="easterEggInput" placeholder="输入彩蛋码">
-        <button id="submitEasterEgg" class="btn">确认</button>
-    </div>
-
-    <!-- 显示精灵名称的开关按钮 -->
-    <div class="toggle-btn-container">
-        <button id="toggleNamesBtn" class="btn toggle-names-btn">显示精灵名称</button>
+            <h2>蓝色方</h2>
+            <div class="action-btns">
+                <button class="btn select-btn">自选</button>
+                <button class="btn ban-btn">禁选</button>
+                <button class="btn random-btn" id="blueRandomBtn">随机</button>
+                <button class="btn reset-btn" id="blueResetBtn">重置</button>
+            </div>
+            <div class="selected-area">
+                <h3>自选位(<span class="selected-count">0</span>/6)</h3>
+                <div class="selected-slots"></div>
+                <h3>禁选位(<span class="banned-count">0</span>/3)</h3>
+                <div class="banned-slots"></div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -455,32 +410,38 @@
         let currentMode = null; // 'select' or 'ban'
         let currentSide = null; // 'red' or 'blue'
         let spirits = [];
-        let races = [];
         let selectedSpirits = { red: [], blue: [] };
         let bannedSpirits = { red: [], blue: [] };
-        let isRandomAnimating = false; // 随机动画是否正在进行
+        let isRandomAnimating = false;
+        let markingMode = null; // 'yellow', 'purple', 'green', null
 
         // DOM元素
         const uploadSpiritBtn = document.querySelector('.upload-spirit');
-        const uploadRaceBtn = document.querySelector('.upload-race');
+        const deleteSpiritBtn = document.getElementById('deleteSpiritBtn');
         const selectBtns = document.querySelectorAll('.select-btn');
         const banBtns = document.querySelectorAll('.ban-btn');
-        const clearTeamBtn = document.querySelector('.clear-team');
-        const clearAllBtn = document.querySelector('.clear-all');
         const cardPool = document.querySelector('.card-pool');
         const redRandomBtn = document.getElementById('redRandomBtn');
         const blueRandomBtn = document.getElementById('blueRandomBtn');
+        const redResetBtn = document.getElementById('redResetBtn');
+        const blueResetBtn = document.getElementById('blueResetBtn');
+        const markYellowBtn = document.getElementById('markYellowBtn');
+        const markPurpleBtn = document.getElementById('markPurpleBtn');
+        const markGreenBtn = document.getElementById('markGreenBtn');
+        const clearMarksBtn = document.getElementById('clearMarksBtn');
 
         // 初始化
         function init() {
             // 事件监听器
             uploadSpiritBtn.addEventListener('click', () => uploadFile('spirit'));
-            uploadRaceBtn.addEventListener('click', () => uploadFile('race'));
+            deleteSpiritBtn.addEventListener('click', deleteAllSpirits);
             
             selectBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     currentMode = 'select';
                     currentSide = btn.closest('.red-side') ? 'red' : 'blue';
+                    markingMode = null;
+                    resetMarkButtons();
                 });
             });
             
@@ -488,105 +449,241 @@
                 btn.addEventListener('click', () => {
                     currentMode = 'ban';
                     currentSide = btn.closest('.red-side') ? 'red' : 'blue';
+                    markingMode = null;
+                    resetMarkButtons();
                 });
             });
-            
-            clearTeamBtn.addEventListener('click', clearTeam);
-            clearAllBtn.addEventListener('click', clearAll);
             
             // 随机按钮事件
             redRandomBtn.addEventListener('click', () => startRandomSelection('red'));
             blueRandomBtn.addEventListener('click', () => startRandomSelection('blue'));
+            
+            // 重置按钮事件
+            redResetBtn.addEventListener('click', () => resetSide('red'));
+            blueResetBtn.addEventListener('click', () => resetSide('blue'));
+            
+            // 标记按钮事件
+            markYellowBtn.addEventListener('click', () => setMarkingMode('yellow'));
+            markPurpleBtn.addEventListener('click', () => setMarkingMode('purple'));
+            markGreenBtn.addEventListener('click', () => setMarkingMode('green'));
+            clearMarksBtn.addEventListener('click', clearAllMarks);
+        }
+
+        // 设置标记模式
+        function setMarkingMode(mode) {
+            markingMode = mode;
+            currentMode = null;
+            currentSide = null;
+            
+            // 重置其他按钮状态
+            resetMarkButtons();
+            
+            // 高亮当前标记按钮
+            switch(mode) {
+                case 'yellow':
+                    markYellowBtn.style.transform = 'scale(1.1)';
+                    markYellowBtn.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.7)';
+                    break;
+                case 'purple':
+                    markPurpleBtn.style.transform = 'scale(1.1)';
+                    markPurpleBtn.style.boxShadow = '0 0 10px rgba(156, 39, 176, 0.7)';
+                    break;
+                case 'green':
+                    markGreenBtn.style.transform = 'scale(1.1)';
+                    markGreenBtn.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.7)';
+                    break;
+            }
+        }
+
+        // 重置标记按钮状态
+        function resetMarkButtons() {
+            [markYellowBtn, markPurpleBtn, markGreenBtn].forEach(btn => {
+                btn.style.transform = '';
+                btn.style.boxShadow = '';
+            });
+        }
+
+        // 清除所有标记
+        function clearAllMarks() {
+            const cards = document.querySelectorAll('.spirit-card');
+            cards.forEach(card => {
+                card.classList.remove('marked-yellow', 'marked-purple', 'marked-green');
+            });
+            markingMode = null;
+            resetMarkButtons();
+        }
+
+        // 删除所有精灵
+        function deleteAllSpirits() {
+            spirits = [];
+            selectedSpirits = { red: [], blue: [] };
+            bannedSpirits = { red: [], blue: [] };
+            cardPool.innerHTML = '';
+            updateSelectedSlots();
+            updateBannedSlots();
+        }
+
+        // 重置指定方
+        function resetSide(side) {
+            // 恢复该方选择的所有精灵卡片
+            [...selectedSpirits[side], ...bannedSpirits[side]].forEach(spirit => {
+                const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
+                if (card) {
+                    card.classList.remove('disabled');
+                    
+                    // 重新绑定点击事件
+                    const newCard = card.cloneNode(true);
+                    card.parentNode.replaceChild(newCard, card);
+                    
+                    const handleClick = () => {
+                        if (!currentMode || !currentSide) return;
+                        
+                        // 检查是否已存在相同精灵
+                        const existsInSelected = selectedSpirits[currentSide].some(s => s.name === spirit.name);
+                        const existsInBanned = bannedSpirits[currentSide].some(s => s.name === spirit.name);
+                        if (existsInSelected || existsInBanned) return;
+                        
+                        if (currentMode === 'select') {
+                            if (selectedSpirits[currentSide].length >= 6) return;
+                            
+                            selectedSpirits[currentSide].push(spirit);
+                            updateSelectedSlots();
+                        } else {
+                            if (bannedSpirits[currentSide].length >= 3) return;
+                            
+                            bannedSpirits[currentSide].push(spirit);
+                            updateBannedSlots();
+                        }
+                        
+                        newCard.classList.add('disabled');
+                        newCard.removeEventListener('click', handleClick);
+                        
+                        // 添加撤回功能
+                        const handleDisabledClick = () => {
+                            if (currentMode === 'select') {
+                                selectedSpirits[currentSide] = selectedSpirits[currentSide].filter(s => s.name !== spirit.name);
+                            } else {
+                                bannedSpirits[currentSide] = bannedSpirits[currentSide].filter(s => s.name !== spirit.name);
+                            }
+                            
+                            // 恢复卡片
+                            newCard.classList.remove('disabled');
+                            newCard.removeEventListener('click', handleDisabledClick);
+                            newCard.addEventListener('click', handleClick);
+                            
+                            updateSelectedSlots();
+                            updateBannedSlots();
+                        };
+                        
+                        newCard.addEventListener('click', handleDisabledClick);
+                    };
+                    
+                    newCard.addEventListener('click', handleClick);
+                }
+            });
+            
+            // 清空该方的选择
+            selectedSpirits[side] = [];
+            bannedSpirits[side] = [];
+            updateSelectedSlots();
+            updateBannedSlots();
         }
 
         // 开始随机选择
-       // 在startRandomSelection函数中修改：
-// 修改startRandomSelection函数
-function startRandomSelection(side) {
-    if (isRandomAnimating) return;
-    if (selectedSpirits[side].length >= 6) return;
-    
-    const availableSpirits = getAvailableSpirits(side);
-    if (availableSpirits.length === 0) return;
-    
-    const randomBtn = side === 'red' ? redRandomBtn : blueRandomBtn;
-    randomBtn.classList.add('animating');
-    isRandomAnimating = true;
-    disableRandomButtons();
-    
-    // 获取所有未被禁用的卡片
-    const allCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
-    if (allCards.length === 0) {
-        finishSelection();
-        return;
-    }
-    
-    // 高亮类名
-    const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
-    
-    // 随机选择动画
-    let iterations = 0;
-    let currentIndex = 0;
-    let intervalId = setInterval(() => {
-        // 移除之前的高亮
-        allCards.forEach(card => card.classList.remove(highlightClass));
-        
-        // 随机选择下一个
-        currentIndex = Math.floor(Math.random() * allCards.length);
-        allCards[currentIndex].classList.add(highlightClass);
-        
-        iterations++;
-        if (iterations > 15) {
-            clearInterval(intervalId);
-            const finalCard = allCards[currentIndex];
-            const finalSpirit = spirits.find(s => s.name === finalCard.dataset.name);
+        function startRandomSelection(side) {
+            if (isRandomAnimating) return;
+            if (selectedSpirits[side].length >= 6) return;
             
-            // 结束动画
-            setTimeout(() => {
-                finalCard.classList.remove(highlightClass);
-                selectSpirit(finalSpirit, side);
+            const availableSpirits = getAvailableSpirits(side);
+            if (availableSpirits.length === 0) return;
+            
+            const randomBtn = side === 'red' ? redRandomBtn : blueRandomBtn;
+            randomBtn.classList.add('animating');
+            isRandomAnimating = true;
+            disableRandomButtons();
+            
+            // 获取所有未被禁用的卡片
+            const allCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
+            if (allCards.length === 0) {
                 finishSelection();
-            }, 500);
+                return;
+            }
+            
+            // 高亮类名
+            const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
+            
+            // 随机选择动画
+            let iterations = 0;
+            let currentIndex = 0;
+            let intervalId = setInterval(() => {
+                // 移除之前的高亮
+                allCards.forEach(card => card.classList.remove(highlightClass));
+                
+                // 随机选择下一个
+                currentIndex = Math.floor(Math.random() * allCards.length);
+                allCards[currentIndex].classList.add(highlightClass);
+                
+                iterations++;
+                if (iterations > 15) {
+                    clearInterval(intervalId);
+                    const finalCard = allCards[currentIndex];
+                    const finalSpirit = spirits.find(s => s.name === finalCard.dataset.name);
+                    
+                    // 结束动画
+                    setTimeout(() => {
+                        finalCard.classList.remove(highlightClass);
+                        selectSpirit(finalSpirit, side);
+                        finishSelection();
+                    }, 500);
+                }
+            }, 100);
+            
+            function finishSelection() {
+                isRandomAnimating = false;
+                randomBtn.classList.remove('animating');
+                randomBtn.style.backgroundColor = '#FFD700';
+                enableRandomButtons();
+            }
         }
-    }, 100);
-    
-    function finishSelection() {
-        isRandomAnimating = false;
-        randomBtn.classList.remove('animating');
-        randomBtn.style.backgroundColor = '#FFD700';
-        enableRandomButtons();
-    }
-}
 
-// 修改getAvailableSpirits函数
-function getAvailableSpirits(side) {
-    return spirits.filter(spirit => {
-        // 检查是否已被当前方选择或禁止
-        const isSelected = selectedSpirits[side].some(s => s.name === spirit.name);
-        const isBanned = bannedSpirits[side].some(s => s.name === spirit.name);
-        
-        // 检查是否已被对方禁止
-        const otherSide = side === 'red' ? 'blue' : 'red';
-        const isBannedByOther = bannedSpirits[otherSide].some(s => s.name === spirit.name);
-        
-        // 检查卡片是否被禁用
-        const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
-        const isDisabled = card ? card.classList.contains('disabled') : false;
-        
-        return !isSelected && !isBanned && !isBannedByOther && !isDisabled;
-    });
-}
+        // 获取可用的精灵列表
+        function getAvailableSpirits(side) {
+            return spirits.filter(spirit => {
+                // 检查是否已被当前方选择或禁止
+                const isSelected = selectedSpirits[side].some(s => s.name === spirit.name);
+                const isBanned = bannedSpirits[side].some(s => s.name === spirit.name);
+                
+                // 检查是否已被对方禁止
+                const otherSide = side === 'red' ? 'blue' : 'red';
+                const isBannedByOther = bannedSpirits[otherSide].some(s => s.name === spirit.name);
+                
+                // 检查卡片是否被禁用
+                const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
+                const isDisabled = card ? card.classList.contains('disabled') : false;
+                
+                return !isSelected && !isBanned && !isBannedByOther && !isDisabled;
+            });
+        }
         
         // 禁用随机按钮
         function disableRandomButtons() {
             redRandomBtn.disabled = true;
             blueRandomBtn.disabled = true;
+            redRandomBtn.classList.add('disabled');
+            blueRandomBtn.classList.add('disabled');
         }
         
         // 启用随机按钮
         function enableRandomButtons() {
             redRandomBtn.disabled = false;
             blueRandomBtn.disabled = false;
+            redRandomBtn.classList.remove('disabled');
+            blueRandomBtn.classList.remove('disabled');
+            
+            if(!isRandomAnimating) {
+                redRandomBtn.style.backgroundColor = '#FFD700';
+                blueRandomBtn.style.backgroundColor = '#FFD700';
+            }
         }
         
         // 选择精灵
@@ -661,14 +758,10 @@ function getAvailableSpirits(side) {
                         const imgUrl = event.target.result;
                         const fileName = file.name.split('.')[0];
                         
-                        if (type === 'spirit') {
-                            if (spirits.length >= 28) return;
-                            const spirit = { name: fileName, url: imgUrl };
-                            spirits.push(spirit);
-                            renderSpirit(spirit);
-                        } else {
-                            races.push({ name: fileName, url: imgUrl });
-                        }
+                        if (spirits.length >= 28) return;
+                        const spirit = { name: fileName, url: imgUrl };
+                        spirits.push(spirit);
+                        renderSpirit(spirit);
                     };
                     reader.readAsDataURL(file);
                 });
@@ -692,6 +785,24 @@ function getAvailableSpirits(side) {
             
             // 点击事件处理函数
             const handleClick = () => {
+                if (markingMode) {
+                    // 标记模式
+                    spiritElement.classList.remove('marked-yellow', 'marked-purple', 'marked-green');
+                    
+                    switch(markingMode) {
+                        case 'yellow':
+                            spiritElement.classList.add('marked-yellow');
+                            break;
+                        case 'purple':
+                            spiritElement.classList.add('marked-purple');
+                            break;
+                        case 'green':
+                            spiritElement.classList.add('marked-green');
+                            break;
+                    }
+                    return;
+                }
+                
                 if (!currentMode || !currentSide) return;
                 
                 // 检查是否已存在相同精灵
@@ -736,24 +847,6 @@ function getAvailableSpirits(side) {
             };
             
             spiritElement.addEventListener('click', handleClick);
-            
-            // 鼠标悬停显示种族图片
-            spiritElement.addEventListener('mouseover', () => {
-                const race = races.find(r => r.name === spirit.name);
-                if (race) {
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'race-tooltip';
-                    tooltip.innerHTML = `<img src="${race.url}" alt="${race.name}">`;
-                    spiritElement.appendChild(tooltip);
-                }
-            });
-            
-            spiritElement.addEventListener('mouseout', () => {
-                const tooltip = spiritElement.querySelector('.race-tooltip');
-                if (tooltip) {
-                    tooltip.remove();
-                }
-            });
         }
 
         // 更新自选位显示
@@ -798,108 +891,7 @@ function getAvailableSpirits(side) {
             });
         }
 
-        // 清除队伍
-        function clearTeam() {
-            // 恢复所有精灵卡片的点击事件
-            document.querySelectorAll('.spirit-card').forEach(card => {
-                card.classList.remove('disabled');
-                
-                // 移除所有事件监听器
-                const newCard = card.cloneNode(true);
-                card.parentNode.replaceChild(newCard, card);
-                
-                // 重新绑定点击事件
-                const spiritName = newCard.dataset.name;
-                const spirit = spirits.find(s => s.name === spiritName);
-                if (spirit) {
-                    const handleClick = () => {
-                        if (!currentMode || !currentSide) return;
-                        
-                        // 检查是否已存在相同精灵
-                        const existsInSelected = selectedSpirits[currentSide].some(s => s.name === spirit.name);
-                        const existsInBanned = bannedSpirits[currentSide].some(s => s.name === spirit.name);
-                        if (existsInSelected || existsInBanned) return;
-                        
-                        if (currentMode === 'select') {
-                            if (selectedSpirits[currentSide].length >= 6) return;
-                            
-                            selectedSpirits[currentSide].push(spirit);
-                            updateSelectedSlots();
-                        } else {
-                            if (bannedSpirits[currentSide].length >= 3) return;
-                            
-                            bannedSpirits[currentSide].push(spirit);
-                            updateBannedSlots();
-                        }
-                        
-                        // 禁用卡片
-                        newCard.classList.add('disabled');
-                        newCard.removeEventListener('click', handleClick);
-                        
-                        // 添加撤回功能
-                        const handleDisabledClick = () => {
-                            if (currentMode === 'select') {
-                                selectedSpirits[currentSide] = selectedSpirits[currentSide].filter(s => s.name !== spirit.name);
-                            } else {
-                                bannedSpirits[currentSide] = bannedSpirits[currentSide].filter(s => s.name !== spirit.name);
-                            }
-                            
-                            // 恢复卡片
-                            newCard.classList.remove('disabled');
-                            newCard.removeEventListener('click', handleDisabledClick);
-                            newCard.addEventListener('click', handleClick);
-                            
-                            updateSelectedSlots();
-                            updateBannedSlots();
-                        };
-                        
-                        newCard.addEventListener('click', handleDisabledClick);
-                    };
-                    
-                    newCard.addEventListener('click', handleClick);
-                }
-            });
-            
-            // 清空选择
-            selectedSpirits = { red: [], blue: [] };
-            bannedSpirits = { red: [], blue: [] };
-            updateSelectedSlots();
-            updateBannedSlots();
-        }
-
-        // 清除全部
-        function clearAll() {
-            spirits = [];
-            races = [];
-            selectedSpirits = { red: [], blue: [] };
-            bannedSpirits = { red: [], blue: [] };
-            cardPool.innerHTML = '';
-            updateSelectedSlots();
-            updateBannedSlots();
-        }
-
-        // 显示名称开关功能
-        const toggleNamesBtn = document.getElementById('toggleNamesBtn');
-        let showNames = false;
-        
-        toggleNamesBtn.addEventListener('click', () => {
-            showNames = !showNames;
-            toggleNamesBtn.textContent = showNames ? '关闭名称' : '显示名称';
-            toggleNamesBtn.classList.toggle('off');
-            
-            document.querySelectorAll('.spirit-card').forEach(card => {
-                let nameElement = card.querySelector('.spirit-name');
-                if (!nameElement) {
-                    nameElement = document.createElement('div');
-                    nameElement.className = 'spirit-name';
-                    nameElement.textContent = card.dataset.name;
-                    card.appendChild(nameElement);
-                }
-                nameElement.style.display = showNames ? 'block' : 'none';
-            });
-        });
-
-        // 彩蛋功能
+         // 彩蛋功能
         const easterEggInput = document.getElementById('easterEggInput');
         const submitEasterEgg = document.getElementById('submitEasterEgg');
         let isTransparentMode = false;
@@ -1218,86 +1210,7 @@ function getAvailableSpirits(side) {
             });
         }
 
-// 头像上传功能
-
-// 初始化
-init();
-setupAvatar();  
-function setupAvatar() {
-    // 创建全局文件input
-    const avatarInput = document.createElement('input');
-    avatarInput.type = 'file';
-    avatarInput.accept = 'image/jpeg,image/png,image/gif';
-    avatarInput.style.display = 'none';
-    document.body.appendChild(avatarInput);
-
-    let currentAvatar = null;
-
-    // 文件选择处理
-    avatarInput.addEventListener('change', (e) => {
-        if (!currentAvatar) return;
-
-        const file = e.target.files[0];
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-        
-        if (file && allowedTypes.includes(file.type)) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                currentAvatar.innerHTML = `<img src="${event.target.result}">`;
-                currentAvatar.classList.add('has-image');
-                
-                // 保存到localStorage
-                const side = currentAvatar.id === 'redAvatar' ? 'red' : 'blue';
-                localStorage.setItem(`${side}TeamAvatar`, event.target.result);
-            };
-            reader.readAsDataURL(file);
-        } else {
-            alert('请上传 JPG/PNG/GIF 格式图片！');
-        }
-        
-        avatarInput.value = '';
-    });
-
-    // 点击事件处理
-    document.querySelectorAll('.red-side h2, .blue-side h2, .avatar').forEach(el => {
-        el.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            const avatarEl = this.classList.contains('avatar') 
-                ? this 
-                : this.querySelector('.avatar');
-            
-            if (!avatarEl) return;
-
-            // 已有头像则清除
-            if (avatarEl.classList.contains('has-image')) {
-                avatarEl.classList.remove('has-image');
-                avatarEl.innerHTML = '';
-                localStorage.removeItem(avatarEl.id === 'redAvatar' ? 'redTeamAvatar' : 'blueTeamAvatar');
-                return;
-            }
-
-            // 触发文件选择
-            currentAvatar = avatarEl;
-            avatarInput.click();
-        });
-    });
-
-    // 加载保存的头像
-    if (localStorage.getItem('redTeamAvatar')) {
-        const redAvatar = document.getElementById('redAvatar');
-        redAvatar.innerHTML = `<img src="${localStorage.getItem('redTeamAvatar')}">`;
-        redAvatar.classList.add('has-image');
-    }
-    if (localStorage.getItem('blueTeamAvatar')) {
-        const blueAvatar = document.getElementById('blueAvatar');
-        blueAvatar.innerHTML = `<img src="${localStorage.getItem('blueTeamAvatar')}">`;
-        blueAvatar.classList.add('has-image');
-    }
-}
-
+        init();
     </script>
-
-    
 </body>
 </html>
