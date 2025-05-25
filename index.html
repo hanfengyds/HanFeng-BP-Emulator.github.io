@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>韩枫BP模拟器V.1.5</title>
+    <title>韩枫BP模拟器V1.8</title>
     <style>
         /* 基础样式 */
         body {
@@ -172,7 +173,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
             gap: 10px;
-            height: 300px;
+            height: 450px;
             overflow-y: auto;
             border: 2px dashed #ccc;
             padding: 15px;
@@ -320,14 +321,27 @@
         }
 
         /* 高亮效果 */
+        /* 高亮效果 */
         .spirit-card.highlight-red {
-            box-shadow: 0 0 10px 5px rgba(255, 0, 0, 0.7);
-            z-index: 5;
+            box-shadow: 
+                0 0 15px 5px rgba(255, 0, 0, 0.8),
+                0 0 25px 10px rgba(255, 0, 0, 0.6),
+                0 0 35px 15px rgba(255, 0, 0, 0.4);
+            z-index: 99999 !important;
+            position: relative;
+            animation: pulse-red 1s infinite;
+            pointer-events: none;
         }
         
         .spirit-card.highlight-blue {
-            box-shadow: 0 0 10px 5px rgba(0, 0, 255, 0.7);
-            z-index: 5;
+            box-shadow: 
+                0 0 15px 5px rgba(0, 0, 255, 0.8),
+                0 0 25px 10px rgba(0, 0, 255, 0.6),
+                0 0 35px 15px rgba(0, 0, 255, 0.4);
+            z-index: 99999 !important;
+            position: relative;
+            animation: pulse-blue 1s infinite;
+            pointer-events: none;
         }
 
         /* 响应式设计 */
@@ -353,7 +367,7 @@
     </div>
 
     <div class="header">
-        <h1>韩枫BP模拟器V.1.5</h1>
+        <h1>韩枫BP模拟器V1.8</h1>
         <div class="author">作者：@韩枫有点帅</div>
     </div>
     
@@ -853,7 +867,9 @@
         function updateSelectedSlots() {
             document.querySelectorAll('.selected-slots').forEach(slot => {
                 const side = slot.closest('.red-side') ? 'red' : 'blue';
+                const selectBtn = document.querySelector(`.${side}-side .select-btn`);
                 slot.innerHTML = '';
+                
                 selectedSpirits[side].forEach(spirit => {
                     const img = document.createElement('img');
                     img.src = spirit.url;
@@ -863,13 +879,31 @@
                     img.style.objectFit = 'contain';
                     slot.appendChild(img);
                 });
-                
+
                 // 更新计数
                 const countElement = slot.closest('.selected-area').querySelector('.selected-count');
                 countElement.textContent = selectedSpirits[side].length;
-            });
-        }
 
+               // 处理按钮文本和功能
+        if (selectedSpirits[side].length === 6) {
+            selectBtn.textContent = '导出';
+            selectBtn.onclick = () => {
+            
+                
+                // 新增跳转到 Pokémon Showdown 的功能
+                window.open('https://play.pokemonshowdown.com/teambuilder', '_blank');
+            };
+        } else {
+            selectBtn.textContent = '自选';
+            selectBtn.onclick = () => {
+                currentMode = 'select';
+                currentSide = side;
+                markingMode = null;
+                resetMarkButtons();
+            };
+        }
+    });
+}
         // 更新禁选位显示
         function updateBannedSlots() {
             document.querySelectorAll('.banned-slots').forEach(slot => {
