@@ -320,13 +320,13 @@
             50% { opacity: 0.9; transform: scale(1.05); }
         }
 
-        /* 高亮效果 */
+
         /* 高亮效果 */
         .spirit-card.highlight-red {
             box-shadow: 
-                0 0 15px 5px rgba(255, 0, 0, 0.8),
-                0 0 25px 10px rgba(255, 0, 0, 0.6),
-                0 0 35px 15px rgba(255, 0, 0, 0.4);
+                0 0 15px 25px rgba(255, 0, 0, 0.8),
+                0 0 25px 15px rgba(255, 63, 53, 0.6),
+                0 0 35px 10px rgb(255, 0, 0);
             z-index: 99999 !important;
             position: relative;
             animation: pulse-red 1s infinite;
@@ -335,9 +335,9 @@
         
         .spirit-card.highlight-blue {
             box-shadow: 
-                0 0 15px 5px rgba(0, 0, 255, 0.8),
-                0 0 25px 10px rgba(0, 0, 255, 0.6),
-                0 0 35px 15px rgba(0, 0, 255, 0.4);
+                0 0 15px 25px rgba(0, 0, 255, 0.8),
+                0 0 25px 10px rgba(50, 50, 227, 0.6),
+                0 0 35px 10px rgba(30, 0, 255, 0.822);
             z-index: 99999 !important;
             position: relative;
             animation: pulse-blue 1s infinite;
@@ -395,9 +395,9 @@
             </div>
             <div class="card-pool"></div>
             <div class="mark-btns">
-                <button class="btn mark-yellow" id="markYellowBtn">传说</button>
-                <button class="btn mark-purple" id="markPurpleBtn">史诗</button>
-                <button class="btn mark-green" id="markGreenBtn">稀有</button>
+                <button class="btn mark-yellow" id="markYellowBtn">标黄</button>
+                <button class="btn mark-purple" id="markPurpleBtn">标紫</button>
+                <button class="btn mark-green" id="markGreenBtn">标绿</button>
                 <button class="btn clear-marks" id="clearMarksBtn">撤销</button>
             </div>
         </div>
@@ -603,62 +603,89 @@
             updateBannedSlots();
         }
 
-        // 开始随机选择
-        function startRandomSelection(side) {
-            if (isRandomAnimating) return;
-            if (selectedSpirits[side].length >= 6) return;
-            
-            const availableSpirits = getAvailableSpirits(side);
-            if (availableSpirits.length === 0) return;
-            
-            const randomBtn = side === 'red' ? redRandomBtn : blueRandomBtn;
-            randomBtn.classList.add('animating');
-            isRandomAnimating = true;
-            disableRandomButtons();
-            
-            // 获取所有未被禁用的卡片
-            const allCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
-            if (allCards.length === 0) {
-                finishSelection();
-                return;
-            }
-            
-            // 高亮类名
-            const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
-            
-            // 随机选择动画
-            let iterations = 0;
-            let currentIndex = 0;
-            let intervalId = setInterval(() => {
-                // 移除之前的高亮
-                allCards.forEach(card => card.classList.remove(highlightClass));
-                
-                // 随机选择下一个
-                currentIndex = Math.floor(Math.random() * allCards.length);
-                allCards[currentIndex].classList.add(highlightClass);
-                
-                iterations++;
-                if (iterations > 15) {
-                    clearInterval(intervalId);
-                    const finalCard = allCards[currentIndex];
-                    const finalSpirit = spirits.find(s => s.name === finalCard.dataset.name);
-                    
-                    // 结束动画
-                    setTimeout(() => {
-                        finalCard.classList.remove(highlightClass);
-                        selectSpirit(finalSpirit, side);
-                        finishSelection();
-                    }, 500);
-                }
-            }, 100);
-            
-            function finishSelection() {
-                isRandomAnimating = false;
-                randomBtn.classList.remove('animating');
-                randomBtn.style.backgroundColor = '#FFD700';
-                enableRandomButtons();
-            }
+       // 开始随机选择
+    function startRandomSelection(side) {
+    if (isRandomAnimating) return;
+    if (selectedSpirits[side].length >= 6) return;
+
+    const availableSpirits = getAvailableSpirits(side);
+    if (availableSpirits.length === 0) return;
+
+    const randomBtn = side === 'red' ? redRandomBtn : blueRandomBtn;
+    randomBtn.classList.add('animating');
+    isRandomAnimating = true;
+    disableRandomButtons();
+
+    const allCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
+    if (allCards.length === 0) {
+        finishSelection();
+        return;
+    }
+
+    const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
+    let currentIndex = 0;
+    let startTime = Date.now();
+    
+    // 随机总动画时间（5~8秒）
+    const totalDuration = 5000 + Math.random() * 3000;
+    // 减速开始时间（最后3秒）
+    const slowDownStart = totalDuration - 3000;
+    
+    let lastUpdateTime = startTime;
+    let currentInterval = 100; // 初始间隔100ms
+    
+    function updateHighlight() {
+        const now = Date.now();
+        const elapsed = now - startTime;
+        
+        // 移除之前的高亮
+        allCards.forEach(card => card.classList.remove(highlightClass));
+        
+        // 切换到下一张卡片
+        currentIndex = (currentIndex + 1) % allCards.length;
+        allCards[currentIndex].classList.add(highlightClass);
+        
+        // 在最后3秒开始减速
+        if (elapsed > slowDownStart) {
+            // 计算减速比例（0到1）
+            const slowDownProgress = (elapsed - slowDownStart) / 3000;
+            // 使用二次缓入函数让减速更自然
+            const easeInQuad = slowDownProgress * slowDownProgress;
+            // 间隔时间从100ms逐渐增加到500ms
+            currentInterval = 100 + easeInQuad * 400;
         }
+        
+        // 检查是否结束
+        if (elapsed >= totalDuration) {
+            const finalCard = allCards[currentIndex];
+            const finalSpirit = spirits.find(s => s.name === finalCard.dataset.name);
+            
+            setTimeout(() => {
+                finalCard.classList.remove(highlightClass);
+                selectSpirit(finalSpirit, side);
+                finishSelection();
+            }, 500);
+            return;
+        }
+        
+        // 动态调整下一次更新的时间
+        const nextUpdate = lastUpdateTime + currentInterval;
+        const delay = Math.max(0, nextUpdate - now);
+        lastUpdateTime = now + delay;
+        
+        setTimeout(updateHighlight, delay);
+    }
+    
+    // 开始动画
+    updateHighlight();
+    
+    function finishSelection() {
+        isRandomAnimating = false;
+        randomBtn.classList.remove('animating');
+        randomBtn.style.backgroundColor = '#FFD700';
+        enableRandomButtons();
+    }
+}
 
         // 获取可用的精灵列表
         function getAvailableSpirits(side) {
