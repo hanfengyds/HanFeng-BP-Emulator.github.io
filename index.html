@@ -280,12 +280,12 @@
         }
         
         .marked-purple {
-            border: 3px solid #9c27b0 !important;
+            border: 3px solid #c028da !important;
             order: -2;
         }
         
         .marked-green {
-            border: 3px solid #4caf50 !important;
+            border: 3px solid #42e248 !important;
             order: -1;
         }
 
@@ -373,7 +373,10 @@
     
     <div class="container">
         <div class="red-side">
-            <h2>红色方</h2>
+            <h2>红色方 
+                <span class="volume-btn" data-audio="red-music">🔊</span>
+                <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="0.7">
+            </h2>
             <div class="action-btns">
                 <button class="btn select-btn">自选</button>
                 <button class="btn ban-btn">禁选</button>
@@ -403,7 +406,10 @@
         </div>
         
         <div class="blue-side">
-            <h2>蓝色方</h2>
+            <h2>蓝色方 
+                <span class="volume-btn" data-audio="blue-music">🔊</span>
+                <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="0.7">
+            </h2>
             <div class="action-btns">
                 <button class="btn select-btn">自选</button>
                 <button class="btn ban-btn">禁选</button>
@@ -448,6 +454,42 @@
         function init() {
             // 事件监听器
             uploadSpiritBtn.addEventListener('click', () => uploadFile('spirit'));
+            
+            // 全局音频变量
+    let currentAudio = null;
+    
+    // 音量按钮点击事件
+            document.querySelectorAll('.volume-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const audioFile = `${this.dataset.audio}.mp3`;
+                    
+                    // 如果点击的是当前正在播放的音频，则停止播放
+                    if (currentAudio && currentAudio.src.endsWith(audioFile)) {
+                        currentAudio.pause();
+                        currentAudio = null;
+                        return;
+                    }
+                    
+                    // 停止当前播放的音频
+                    if (currentAudio) {
+                        currentAudio.pause();
+                    }
+                    
+                    // 播放新音频
+                    currentAudio = new Audio(audioFile);
+                    currentAudio.volume = this.nextElementSibling.value; // 获取滑块值
+                    currentAudio.play();
+                });
+            });
+            
+            // 音量滑块事件
+            document.querySelectorAll('.volume-slider').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    if (currentAudio) {
+                        currentAudio.volume = this.value;
+                    }
+                });
+            });
             deleteSpiritBtn.addEventListener('click', deleteAllSpirits);
             
             selectBtns.forEach(btn => {
@@ -484,30 +526,71 @@
         }
 
         // 设置标记模式
-        function setMarkingMode(mode) {
-            markingMode = mode;
-            currentMode = null;
-            currentSide = null;
-            
-            // 重置其他按钮状态
-            resetMarkButtons();
-            
-            // 高亮当前标记按钮
-            switch(mode) {
-                case 'yellow':
-                    markYellowBtn.style.transform = 'scale(1.1)';
-                    markYellowBtn.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.7)';
-                    break;
-                case 'purple':
-                    markPurpleBtn.style.transform = 'scale(1.1)';
-                    markPurpleBtn.style.boxShadow = '0 0 10px rgba(156, 39, 176, 0.7)';
-                    break;
-                case 'green':
-                    markGreenBtn.style.transform = 'scale(1.1)';
-                    markGreenBtn.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.7)';
-                    break;
-            }
+function setMarkingMode(mode) {
+    markingMode = mode;
+    currentMode = null;
+    currentSide = null;
+    
+    // 重置其他按钮状态
+    resetMarkButtons();
+    
+    // 高亮当前标记按钮
+    switch(mode) {
+        case 'yellow':
+            markYellowBtn.style.transform = 'scale(1.1)';
+            markYellowBtn.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.7)';
+            break;
+        case 'purple':
+            markPurpleBtn.style.transform = 'scale(1.1)';
+            markPurpleBtn.style.boxShadow = '0 0 10px rgba(156, 39, 176, 0.7)';
+            break;
+        case 'green':
+            markGreenBtn.style.transform = 'scale(1.1)';
+            markGreenBtn.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.7)';
+            break;
+    }
+    
+    // 更新所有精灵卡片的费数显示
+    updateCostDisplay();
+}
+
+// 更新费数显示
+function updateCostDisplay() {
+    const cards = document.querySelectorAll('.spirit-card');
+    cards.forEach(card => {
+        // 移除旧的费数显示
+        const oldCost = card.querySelector('.cost-display');
+        if (oldCost) oldCost.remove();
+        
+        // 创建新的费数显示
+        const costDisplay = document.createElement('div');
+        costDisplay.className = 'cost-display';
+        costDisplay.style.position = 'absolute';
+        costDisplay.style.top = '0';
+        costDisplay.style.left = '0';
+        costDisplay.style.padding = '2px 5px';
+        costDisplay.style.borderRadius = '0 0 4px 0';
+        costDisplay.style.fontSize = '12px';
+        costDisplay.style.fontWeight = 'bold';
+        costDisplay.style.color = '#000';
+        
+        if (card.classList.contains('marked-yellow')) {
+            costDisplay.style.backgroundColor = '#FFD700';
+            costDisplay.textContent = '5费';
+        } else if (card.classList.contains('marked-purple')) {
+            costDisplay.style.backgroundColor = '# c028da';
+            costDisplay.textContent = '4费';
+        } else if (card.classList.contains('marked-green')) {
+            costDisplay.style.backgroundColor = '#42e248';
+            costDisplay.textContent = '3费';
+        } else {
+            costDisplay.style.backgroundColor = '#fff';
+            costDisplay.textContent = '2费';
         }
+        
+        card.appendChild(costDisplay);
+    });
+}
 
         // 重置标记按钮状态
         function resetMarkButtons() {
@@ -518,14 +601,15 @@
         }
 
         // 清除所有标记
-        function clearAllMarks() {
-            const cards = document.querySelectorAll('.spirit-card');
-            cards.forEach(card => {
-                card.classList.remove('marked-yellow', 'marked-purple', 'marked-green');
-            });
-            markingMode = null;
-            resetMarkButtons();
-        }
+function clearAllMarks() {
+    const cards = document.querySelectorAll('.spirit-card');
+    cards.forEach(card => {
+        card.classList.remove('marked-yellow', 'marked-purple', 'marked-green');
+    });
+    markingMode = null;
+    resetMarkButtons();
+    updateCostDisplay();
+}
 
         // 删除所有精灵
         function deleteAllSpirits() {
@@ -729,15 +813,16 @@
         
         // 选择精灵
         function selectSpirit(spirit, side) {
-            if (selectedSpirits[side].length >= 6) return;
-            
-            selectedSpirits[side].push(spirit);
-            updateSelectedSlots();
-            
-            // 禁用卡片
-            const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
-            if (card) {
-                card.classList.add('disabled');
+    if (selectedSpirits[side].length >= 6) return;
+    
+    selectedSpirits[side].push(spirit);
+    updateSelectedSlots();
+    
+    // 禁用卡片
+    const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
+    if (card) {
+        card.classList.add('disabled');
+        updateCostDisplay();
                 
                 // 添加撤回功能
                 const handleDisabledClick = () => {
@@ -841,6 +926,7 @@
                             spiritElement.classList.add('marked-green');
                             break;
                     }
+                    updateCostDisplay();
                     return;
                 }
                 
@@ -915,7 +1001,19 @@
         if (selectedSpirits[side].length === 6) {
             selectBtn.textContent = '导出';
             selectBtn.onclick = () => {
-            
+            // 精灵名称的复制功能
+                const names = selectedSpirits[side].map(spirit => spirit.name).join('\n\n');
+                navigator.clipboard.writeText(names).then(() => {
+                   
+                }).catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = names;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                 
+                });
                 
                 // 新增跳转到 Pokémon Showdown 的功能
                 window.open('https://play.pokemonshowdown.com/teambuilder', '_blank');
