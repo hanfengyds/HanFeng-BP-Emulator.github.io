@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>韩枫BP模拟器V1.8</title>
     <style>
-        /* 基础样式 */
+
+/* 基础样式 */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -35,6 +36,32 @@
             top: 20px;
             font-style: italic;
             color: white;
+        }
+
+        .volume-text {
+            display: inline; /* 改为行内元素，避免换行 */
+            margin: 0 1px; /* 调整字间距 */
+            padding: 0 2px; /* 缩小内边距 */
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 3px;
+        }
+
+        .volume-emoji {
+            display: inline-block;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: transform 0.2s;
+        }
+
+        .volume-emoji:hover {
+            transform: scale(1.2);
+        }
+
+        .volume-text:hover {
+            background-color: rgba(0,0,0,0.1);
+            border-color: #ccc;
         }
 
         .container {
@@ -208,6 +235,14 @@
             margin-bottom: 15px;
         }
 
+.cost-display {
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
         /* 精灵卡片样式 */
         .spirit-card {
             position: relative;
@@ -321,27 +356,150 @@
         }
 
 
-        /* 高亮效果 */
+        @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes beat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.15); }
+    50% { transform: scale(0.95); }
+    75% { transform: scale(1.1); }
+}
+
+@keyframes smoothColorTransition {
+    0% { 
+        filter: hue-rotate(0deg) brightness(1.2);
+        box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.7);
+    }
+    5% { filter: hue-rotate(18deg); }
+    10% { filter: hue-rotate(36deg); }
+    15% { filter: hue-rotate(54deg); }
+    20% { filter: hue-rotate(72deg); }
+    25% { filter: hue-rotate(90deg); }
+    30% { filter: hue-rotate(108deg); }
+    35% { filter: hue-rotate(126deg); }
+    40% { filter: hue-rotate(144deg); }
+    45% { filter: hue-rotate(162deg); }
+    50% { 
+        filter: hue-rotate(180deg) brightness(1.5);
+        box-shadow: 0 0 20px 10px rgba(0, 255, 0, 0.7);
+    }
+    55% { filter: hue-rotate(198deg); }
+    60% { filter: hue-rotate(216deg); }
+    65% { filter: hue-rotate(234deg); }
+    70% { filter: hue-rotate(252deg); }
+    75% { filter: hue-rotate(270deg); }
+    80% { filter: hue-rotate(288deg); }
+    85% { filter: hue-rotate(306deg); }
+    90% { filter: hue-rotate(324deg); }
+    95% { filter: hue-rotate(342deg); }
+    100% { 
+        filter: hue-rotate(360deg) brightness(1.2);
+        box-shadow: 0 0 20px 10px rgba(0, 0, 255, 0.7);
+    }
+}
+
+/* 添加新的光效动画 */
+@keyframes rainbow-glow {
+    0% { box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.7); }
+    16% { box-shadow: 0 0 20px 10px rgba(255, 165, 0, 0.7); }
+    32% { box-shadow: 0 0 20px 10px rgba(255, 255, 0, 0.7); }
+    48% { box-shadow: 0 0 20px 10px rgba(0, 255, 0, 0.7); }
+    64% { box-shadow: 0 0 20px 10px rgba(0, 0, 255, 0.7); }
+    80% { box-shadow: 0 0 20px 10px rgba(128, 0, 128, 0.7); }
+    100% { box-shadow: 0 0 20px 10px rgba(255, 0, 255, 0.7); }
+}
+
+@keyframes particle-explosion {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+.glow-beat {
+    animation: 
+        beat 0.6s infinite ease-in-out,
+        smoothColorTransition 4s infinite linear;
+    box-shadow: 
+        0 0 15px 5px rgba(255,255,255,0.8),
+        0 0 30px 15px var(--glow-color-1),
+        0 0 45px 25px var(--glow-color-2);
+    transition: all 0.3s;
+}
+
+/* 高亮效果 */
         .spirit-card.highlight-red {
             box-shadow: 
-                0 0 15px 25px rgba(255, 0, 0, 0.8),
-                0 0 25px 15px rgba(255, 63, 53, 0.6),
-                0 0 35px 10px rgb(255, 0, 0);
+                0 0 10px 15x rgba(255, 0, 0, 0.6),
+                0 0 15x 10px rgba(255, 63, 53, 0.4),
+                0 0 20x 5px rgb(255, 0, 0);
             z-index: 99999 !important;
             position: relative;
             animation: pulse-red 1s infinite;
             pointer-events: none;
         }
+
+        /* 添加随机选中效果 */
+        .random-selected {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(6) !important;
+            z-index: 999999 !important;
+            transition: 
+                transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55),
+                opacity 0.5s ease-out;
+            animation: 
+                random-selected-float 2s ease-in-out;
+        }
+
+        @keyframes random-selected-float {
+            0% { 
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(6);
+                opacity: 1;
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(6);
+                opacity: 0;
+            }
+        }
         
         .spirit-card.highlight-blue {
             box-shadow: 
-                0 0 15px 25px rgba(0, 0, 255, 0.8),
-                0 0 25px 10px rgba(50, 50, 227, 0.6),
-                0 0 35px 10px rgba(30, 0, 255, 0.822);
+                0 0 10px 15px rgba(0, 0, 255, 0.6),
+                0 0 15px 10px rgba(63, 83, 255, 0.4),
+                0 0 20px 5px rgb(0, 0, 255);
             z-index: 99999 !important;
             position: relative;
             animation: pulse-blue 1s infinite;
             pointer-events: none;
+        }
+
+        .spirit-card.highlight-random-red {
+            box-shadow: 
+                0 0 15px 25px rgba(255, 0, 0, 0.8),
+                0 0 25px 15px rgba(255, 63, 63, 0.6),
+                0 0 35px 10px rgb(255, 0, 0);
+            transform: scale(1.15);
+            z-index: 100000 !important;
+            transition: transform 0.05s ease-in-out, box-shadow 0.05s ease-in-out;
+        }
+
+        .spirit-card.highlight-random-blue {
+            box-shadow: 
+                0 0 15px 25px rgba(0, 0, 255, 0.8),
+                0 0 25px 15px rgba(63, 83, 255, 0.6),
+                0 0 35px 10px rgb(0, 0, 255);
+            transform: scale(1.15);
+            z-index: 100000 !important;
+            transition: transform 0.05s ease-in-out, box-shadow 0.05s ease-in-out;
         }
 
         /* 响应式设计 */
@@ -373,10 +531,16 @@
     
     <div class="container">
         <div class="red-side">
-            <h2>红色方 
-                <span class="volume-btn" data-audio="red-music">🔊</span>
-                <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="0.7">
+            <h2>
+                <span class="volume-text" data-audio="red-music">红</span>
+                色
+                <span class="volume-text" data-audio="red-music">方</span>
+                <span class="volume-emoji" data-audio="red-music">🔊</span>
             </h2>
+            <div class="cost-display">
+                <span>费数：<span id="redCombinedCost">0/30</span></span>
+                <input type="range" id="redCostLimit" min="12" max="30" value="30" style="display: block; width: 100%; margin-top: 5px;">
+            </div>
             <div class="action-btns">
                 <button class="btn select-btn">自选</button>
                 <button class="btn ban-btn">禁选</button>
@@ -406,10 +570,16 @@
         </div>
         
         <div class="blue-side">
-            <h2>蓝色方 
-                <span class="volume-btn" data-audio="blue-music">🔊</span>
-                <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="0.7">
+            <h2>
+                <span class="volume-text" data-audio="blue-music">蓝</span>
+                色
+                <span class="volume-text" data-audio="blue-music">方</span>
+                <span class="volume-emoji" data-audio="blue-music">🔊</span>
             </h2>
+            <div class="cost-display">
+                <span>费数：<span id="blueCombinedCost">0/30</span></span>
+                <input type="range" id="blueCostLimit" min="12" max="30" value="30" style="display: block; width: 100%; margin-top: 5px;">
+            </div>
             <div class="action-btns">
                 <button class="btn select-btn">自选</button>
                 <button class="btn ban-btn">禁选</button>
@@ -433,9 +603,213 @@
         let selectedSpirits = { red: [], blue: [] };
         let bannedSpirits = { red: [], blue: [] };
         let isRandomAnimating = false;
+let randomSound = null; // 添加全局变量用于控制随机音效
+let costSound = null; // 控制费数滑动音效
+let isBattleReady = false; // 战斗准备状态
         let markingMode = null; // 'yellow', 'purple', 'green', null
+        let costLimits = { red: 30, blue: 30 };
+        let currentAudio = null; // Moved and now truly global
+let zhandouAudio = null; // 添加战斗音乐变量
 
-        // DOM元素
+    // 示例：在添加精灵到自选位的逻辑中调用 onSelectionChange
+        // 假设这里有一个添加精灵到自选位的函数
+        function addToSelection(side, spirit) {
+            // ... 你的添加精灵到 selectedSpirits[side] 的逻辑 ...
+            selectedSpirits[side].push(spirit); // 示例逻辑
+            updateTeamDisplay(side); // 更新界面显示
+            onSelectionChange(); // 确保在这里调用
+        }
+
+        // 如果还有从自选位移除精灵的逻辑，也需要调用 onSelectionChange
+        function removeFromSelection(side, spirit) {
+            // 从selectedSpirits中移除精灵
+            selectedSpirits[side] = selectedSpirits[side].filter(s => s.name !== spirit.name);
+            
+            // 更新界面显示
+            updateSelectedSlots();
+            updateCostDisplay();
+            
+            // 恢复精灵卡片的可用状态
+            const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
+            if (card) {
+                card.classList.remove('disabled');
+                card.style.pointerEvents = 'auto';
+                card.style.opacity = '1';
+            }
+            
+            onSelectionChange(); // 确保在这里调用
+        }
+
+    // 检查红蓝方自选位是否都满员
+    function checkSelectionFull() {
+        return selectedSpirits.red.length === 6 && selectedSpirits.blue.length === 6;
+    }
+
+    // 播放音效函数
+        function playSound(soundName) {
+            // 如果是红蓝方音乐，不受此函数影响
+            if (soundName === 'red-music' || soundName === 'blue-music') return;
+            
+            if (currentAudio && 
+                (currentAudio.src.endsWith('red-music.mp3') || 
+                 currentAudio.src.endsWith('blue-music.mp3'))) {
+                return; // 不干扰正在播放的红蓝方音乐
+            }
+            
+            // 停止当前音乐
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+            
+            currentAudio = new Audio(`${soundName}.mp3`);
+            currentAudio.volume = 0.5;
+            currentAudio.play();
+        }
+    
+    // 应用战斗效果
+    function playZhandouMusic() {
+    if (!zhandouAudio) {
+        zhandouAudio = new Audio('zhandou.mp3');
+        zhandouAudio.volume = 0.5;
+        zhandouAudio.loop = true;
+        
+        // 处理浏览器自动播放策略
+        const playPromise = zhandouAudio.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                // 显示提示让用户交互后播放
+                alert('请点击页面任意位置以播放战斗音乐');
+                document.body.addEventListener('click', () => {
+                    zhandouAudio.play();
+                }, { once: true });
+            });
+        }
+    }
+}
+
+function analyzeAudio(analyser) {
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    let colorIndex = 0;
+    const colors = [
+        'rgb(255, 0, 0)',    // 纯红
+        'rgb(255, 80, 0)',   // 橙红
+        'rgb(255, 160, 0)',  // 亮橙
+        'rgb(255, 255, 0)',  // 纯黄
+        'rgb(160, 255, 0)',  // 黄绿
+        'rgb(0, 255, 0)',    // 纯绿
+        'rgb(0, 255, 160)',  // 绿蓝
+        'rgb(0, 150, 255)',  // 天蓝
+        'rgb(0, 0, 255)',    // 纯蓝
+        'rgb(100, 0, 255)',  // 蓝紫
+        'rgb(200, 0, 255)',  // 紫红
+        'rgb(255, 0, 150)'   // 粉红
+    ];
+    let lastBeatTime = 0;
+    const beatThreshold = 130;
+    const minBeatInterval = 150; // 更短的节拍间隔
+
+    function update() {
+        analyser.getByteFrequencyData(dataArray);
+
+        let lowFrequencyEnergy = 0;
+        for (let i = 0; i < bufferLength / 4; i++) {
+            lowFrequencyEnergy += dataArray[i];
+        }
+        lowFrequencyEnergy = lowFrequencyEnergy / (bufferLength / 4);
+
+        const currentTime = performance.now();
+
+        if (lowFrequencyEnergy > beatThreshold && (currentTime - lastBeatTime) > minBeatInterval) {
+            colorIndex = (colorIndex + 1) % colors.length;
+            lastBeatTime = currentTime;
+        }
+
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) {
+            sum += dataArray[i];
+        }
+        const average = sum / bufferLength;
+        
+        // 战斗光效缩放效果 (缩放程度：0.6-1.8)
+        const scale = 0.5 + (average / 255) * 1.4;
+        const translateX = Math.sin(currentTime * 0.008) * (average / 255 * 30); // 更快的左右摆动
+        const translateY = Math.cos(currentTime * 0.006) * (average / 255 * 20); // 更快的上下摆动
+        const rotate = Math.sin(currentTime * 0.004) * (average / 255 * 25); // 更快的旋转
+        
+        // 添加随机抖动效果
+        const randomShakeX = (Math.random() - 0.5) * (average / 255 * 15);
+        const randomShakeY = (Math.random() - 0.5) * (average / 255 * 15);
+        
+        const currentColor = colors[colorIndex];
+        const brightnessFactor = 0.7 + (average / 255) * 1.3; // 更大的亮度变化范围
+
+        const cards = document.querySelectorAll('.card-pool .spirit-card img');
+        cards.forEach(card => {
+            // 组合多种变换效果，包括随机抖动
+            card.style.transform = `
+                scale(${scale}) 
+                translate(${translateX + randomShakeX}px, ${translateY + randomShakeY}px) 
+                rotate(${rotate}deg)
+            `;
+            card.style.filter = `brightness(${brightnessFactor}) drop-shadow(0 0 15px ${currentColor})`;
+            card.style.boxShadow = `0 0 20px 10px ${currentColor}`;
+            card.style.transition = 'transform 0.05s linear'; // 更快的过渡效果
+        });
+
+        requestAnimationFrame(update);
+    }
+
+    update();
+}
+
+function createParticles(color, intensity) {
+    const cards = document.querySelectorAll('.spirit-card');
+    cards.forEach(card => {
+        for (let i = 0; i < Math.floor(intensity/50); i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.backgroundColor = `rgba(${color}, ${0.5 + intensity/510})`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            card.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 1000);
+        }
+    });
+}
+
+function applyBattleEffects() {
+    isBattleReady = true;
+    
+    const cards = document.querySelectorAll('.spirit-card img');
+    cards.forEach(card => {
+        const colors = [
+            `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.9)`,
+            `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.7)`,
+            `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`
+        ];
+        
+        card.style.setProperty('--glow-color-1', colors[0]);
+        card.style.setProperty('--glow-color-2', colors[1]);
+        card.style.setProperty('--glow-color-3', colors[2]);
+        card.classList.add('glow-beat');
+    });
+}
+
+    // 全局获取精灵费用的函数
+    function getSpiritCost(cardElement) {
+        if (!cardElement) return 2; // Default cost if card is somehow null
+        if (cardElement.classList.contains('marked-yellow')) return 5;
+        if (cardElement.classList.contains('marked-purple')) return 4;
+        if (cardElement.classList.contains('marked-green')) return 3;
+        return 2; // Default cost for unmarked cards
+    }
+
+    // DOM元素
         const uploadSpiritBtn = document.querySelector('.upload-spirit');
         const deleteSpiritBtn = document.getElementById('deleteSpiritBtn');
         const selectBtns = document.querySelectorAll('.select-btn');
@@ -455,54 +829,79 @@
             // 事件监听器
             uploadSpiritBtn.addEventListener('click', () => uploadFile('spirit'));
             
-            // 全局音频变量
-    let currentAudio = null;
+            // 全局音频变量 (declaration moved to global scope)
     
-    // 音量按钮点击事件
-            document.querySelectorAll('.volume-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
+            // 音量emoji点击事件
+            document.querySelectorAll('.volume-emoji').forEach(emoji => {
+                emoji.addEventListener('click', function() {
                     const audioFile = `${this.dataset.audio}.mp3`;
                     
-                    // 如果点击的是当前正在播放的音频，则停止播放
                     if (currentAudio && currentAudio.src.endsWith(audioFile)) {
+                        // 如果正在播放当前音乐则停止
                         currentAudio.pause();
                         currentAudio = null;
+                        this.textContent = '🔊'; // 重置为静音图标
                         return;
                     }
                     
-                    // 停止当前播放的音频
+                    // 停止当前播放的音乐
                     if (currentAudio) {
                         currentAudio.pause();
+                        // 重置其他emoji图标
+                        document.querySelectorAll('.volume-emoji').forEach(e => {
+                            if (e !== this) e.textContent = '🔊';
+                        });
                     }
                     
-                    // 播放新音频
+                    // 播放新音乐
                     currentAudio = new Audio(audioFile);
-                    currentAudio.volume = this.nextElementSibling.value; // 获取滑块值
+                    currentAudio.volume = 0.5;
                     currentAudio.play();
+                    this.textContent = '🔈'; // 设置为播放中图标
                 });
             });
             
-            // 音量滑块事件
-            document.querySelectorAll('.volume-slider').forEach(slider => {
-                slider.addEventListener('input', function() {
-                    if (currentAudio) {
-                        currentAudio.volume = this.value;
-                    }
+            // 音量文本点击事件（控制音量）
+            document.querySelectorAll('.volume-text').forEach(text => {
+                text.addEventListener('click', function() {
+                    const audioFile = `${this.dataset.audio}.mp3`;
+            const isIncrease = this.textContent === '红' || this.textContent === '蓝'; // 红/蓝字控制音量+
+            const isDecrease = this.textContent === '方'; // 方字控制音量-
+              
+            if (currentAudio && currentAudio.src.endsWith(audioFile)) {
+                if (isIncrease && currentAudio.volume < 1) {
+                    currentAudio.volume = Math.min(1, currentAudio.volume + 0.1);
+                } else if (isDecrease && currentAudio.volume > 0) {
+                    currentAudio.volume = Math.max(0, currentAudio.volume - 0.1);
+                }
+                return;
+            }
+              
+            if (currentAudio) {
+                currentAudio.pause();
+            }
+              
+            currentAudio = new Audio(audioFile);
+            currentAudio.volume = 0.5;
+            currentAudio.play();
                 });
             });
             deleteSpiritBtn.addEventListener('click', deleteAllSpirits);
             
             selectBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
+                    playSound('anniu'); // 播放音效
                     currentMode = 'select';
                     currentSide = btn.closest('.red-side') ? 'red' : 'blue';
                     markingMode = null;
                     resetMarkButtons();
+                    onSelectionChange(); // 添加状态检查
                 });
             });
             
             banBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
+                    playSound('anniu'); // 播放音效
                     currentMode = 'ban';
                     currentSide = btn.closest('.red-side') ? 'red' : 'blue';
                     markingMode = null;
@@ -511,18 +910,93 @@
             });
             
             // 随机按钮事件
-            redRandomBtn.addEventListener('click', () => startRandomSelection('red'));
-            blueRandomBtn.addEventListener('click', () => startRandomSelection('blue'));
+            redRandomBtn.addEventListener('click', () => {
+                playSound('anniu'); // 播放音效
+                startRandomSelection('red');
+            });
+            blueRandomBtn.addEventListener('click', () => {
+                playSound('anniu'); // 播放音效
+                startRandomSelection('blue');
+            });
             
             // 重置按钮事件
-            redResetBtn.addEventListener('click', () => resetSide('red'));
-            blueResetBtn.addEventListener('click', () => resetSide('blue'));
+            redResetBtn.addEventListener('click', function() {
+                playSound('chongzhi');
+                if (zhandouAudio) {
+                    zhandouAudio.pause();
+                    zhandouAudio = null;
+                }
+                // 移除音乐律动效果
+                document.querySelectorAll('.spirit-card img').forEach(img => {
+                    img.style.transform = '';
+                    img.style.filter = '';
+                });
+                // ... existing reset code ...
+                resetSide('red');
+            });
+            blueResetBtn.addEventListener('click', function() {
+                playSound('chongzhi');
+                if (zhandouAudio) {
+                    zhandouAudio.pause();
+                    zhandouAudio = null;
+                }
+                // 移除音乐律动效果
+                document.querySelectorAll('.spirit-card img').forEach(img => {
+                    img.style.transform = '';
+                    img.style.filter = '';
+                });
+                // ... existing reset code ...
+                resetSide('blue');
+            });
             
             // 标记按钮事件
             markYellowBtn.addEventListener('click', () => setMarkingMode('yellow'));
             markPurpleBtn.addEventListener('click', () => setMarkingMode('purple'));
-            markGreenBtn.addEventListener('click', () => setMarkingMode('green'));
+            markGreenBtn.addEventListener('click', () => {
+                setMarkingMode('green');
+            });
             clearMarksBtn.addEventListener('click', clearAllMarks);
+
+        // 红色方费数上限滑动事件
+// 红色方费数上限滑动事件
+// 红色方费数上限滑动事件
+        document.getElementById('redCostLimit').addEventListener('input', function() {
+            costLimits.red = parseInt(this.value);
+            updateCostDisplay();
+            
+            // 播放/循环费数音效
+            if (!costSound) {
+                costSound = new Audio('feishu.mp3');
+                costSound.loop = true;
+                costSound.play();
+            }
+        });
+
+        // 蓝色方费数上限滑动事件 
+        document.getElementById('blueCostLimit').addEventListener('input', function() {
+            costLimits.blue = parseInt(this.value);
+            updateCostDisplay();
+            
+            // 播放/循环费数音效
+            if (!costSound) {
+                costSound = new Audio('feishu.mp3');
+                costSound.loop = true;
+                costSound.play();
+            }
+        });
+
+        // 添加鼠标松开事件停止音效
+        ['mouseup', 'touchend'].forEach(evt => {
+            document.getElementById('redCostLimit').addEventListener(evt, stopCostSound);
+            document.getElementById('blueCostLimit').addEventListener(evt, stopCostSound);
+        });
+
+        function stopCostSound() {
+            if (costSound) {
+                costSound.pause();
+                costSound = null;
+            }
+        }
         }
 
         // 设置标记模式
@@ -534,33 +1008,38 @@ function setMarkingMode(mode) {
     // 重置其他按钮状态
     resetMarkButtons();
     
-    // 高亮当前标记按钮
-    switch(mode) {
-        case 'yellow':
-            markYellowBtn.style.transform = 'scale(1.1)';
-            markYellowBtn.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.7)';
-            break;
-        case 'purple':
-            markPurpleBtn.style.transform = 'scale(1.1)';
-            markPurpleBtn.style.boxShadow = '0 0 10px rgba(156, 39, 176, 0.7)';
-            break;
-        case 'green':
-            markGreenBtn.style.transform = 'scale(1.1)';
-            markGreenBtn.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.7)';
-            break;
-    }
+    // 添加延迟确保动画能正常执行
+    setTimeout(() => {
+        switch(mode) {
+            case 'yellow':
+                markYellowBtn.style.transform = 'scale(1.1)';
+                markYellowBtn.style.boxShadow = '0 0 10px rgba(255, 215, 0, 0.7)';
+                playSound('chuanshuo');
+                break;
+            case 'purple':
+                markPurpleBtn.style.transform = 'scale(1.1)';
+                markPurpleBtn.style.boxShadow = '0 0 10px rgba(156, 39, 176, 0.7)';
+                playSound('shishi');
+                break;
+            case 'green':
+                markGreenBtn.style.transform = 'scale(1.1)';
+                markGreenBtn.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.7)';
+                playSound('xiyou'); // 修改此处
+                break;
+        }
+    }, 100);
     
     // 更新所有精灵卡片的费数显示
     updateCostDisplay();
 }
 
-// 更新费数显示
+// 更新费数显示函数添加费数计算
 function updateCostDisplay() {
     const cards = document.querySelectorAll('.spirit-card');
     cards.forEach(card => {
         // 移除旧的费数显示
-        const oldCost = card.querySelector('.cost-display');
-        if (oldCost) oldCost.remove();
+        const oldCostDisplay = card.querySelector('.cost-display');
+        if (oldCostDisplay) oldCostDisplay.remove();
         
         // 创建新的费数显示
         const costDisplay = document.createElement('div');
@@ -578,7 +1057,7 @@ function updateCostDisplay() {
             costDisplay.style.backgroundColor = '#FFD700';
             costDisplay.textContent = '5费';
         } else if (card.classList.contains('marked-purple')) {
-            costDisplay.style.backgroundColor = '# c028da';
+            costDisplay.style.backgroundColor = '#c028da'; // Corrected typo
             costDisplay.textContent = '4费';
         } else if (card.classList.contains('marked-green')) {
             costDisplay.style.backgroundColor = '#42e248';
@@ -590,6 +1069,42 @@ function updateCostDisplay() {
         
         card.appendChild(costDisplay);
     });
+
+    // 更新红色方合并费数显示
+    let redCost = calculateSideCost('red');
+    const redCombinedCostEl = document.getElementById('redCombinedCost');
+    if (redCombinedCostEl) {
+        redCombinedCostEl.textContent = `${redCost}/${costLimits.red}`;
+        redCombinedCostEl.style.color = redCost > costLimits.red ? 'red' : '';
+    }
+
+    // 更新蓝色方合并费数显示
+    let blueCost = calculateSideCost('blue');
+    const blueCombinedCostEl = document.getElementById('blueCombinedCost');
+    if (blueCombinedCostEl) {
+        blueCombinedCostEl.textContent = `${blueCost}/${costLimits.blue}`;
+        blueCombinedCostEl.style.color = blueCost > costLimits.blue ? 'red' : '';
+    }
+}
+
+// 新增计算某一方费数的函数
+function calculateSideCost(side) {
+    let totalCost = 0;
+    selectedSpirits[side].forEach(spirit => {
+        const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
+        if (card) {
+            if (card.classList.contains('marked-yellow')) {
+                totalCost += 5;
+            } else if (card.classList.contains('marked-purple')) {
+                totalCost += 4;
+            } else if (card.classList.contains('marked-green')) {
+                totalCost += 3;
+            } else {
+                totalCost += 2;
+            }
+        }
+    });
+    return totalCost;
 }
 
         // 重置标记按钮状态
@@ -623,11 +1138,28 @@ function clearAllMarks() {
 
         // 重置指定方
         function resetSide(side) {
-            // 恢复该方选择的所有精灵卡片
-            [...selectedSpirits[side], ...bannedSpirits[side]].forEach(spirit => {
-                const card = document.querySelector(`.spirit-card[data-name="${spirit.name}"]`);
-                if (card) {
+            // 保存被移除的精灵以便恢复状态
+            const removedSelected = [...selectedSpirits[side]];
+            const removedBanned = [...bannedSpirits[side]];
+            
+            // 清空该方的选择
+            selectedSpirits[side] = [];
+            bannedSpirits[side] = [];
+            
+            // 更新界面显示
+            updateSelectedSlots();
+            updateBannedSlots();
+            updateCostDisplay();
+            
+            // 恢复所有精灵卡片的可用状态
+            const cards = document.querySelectorAll('.spirit-card');
+            cards.forEach(card => {
+                const spiritName = card.dataset.name;
+                if (removedSelected.some(s => s.name === spiritName) || 
+                    removedBanned.some(s => s.name === spiritName)) {
                     card.classList.remove('disabled');
+                    card.style.pointerEvents = 'auto';
+                    card.style.opacity = '1';
                     
                     // 重新绑定点击事件
                     const newCard = card.cloneNode(true);
@@ -637,19 +1169,39 @@ function clearAllMarks() {
                         if (!currentMode || !currentSide) return;
                         
                         // 检查是否已存在相同精灵
-                        const existsInSelected = selectedSpirits[currentSide].some(s => s.name === spirit.name);
-                        const existsInBanned = bannedSpirits[currentSide].some(s => s.name === spirit.name);
+                        const existsInSelected = selectedSpirits[currentSide].some(s => s.name === spiritName);
+                        const existsInBanned = bannedSpirits[currentSide].some(s => s.name === spiritName);
                         if (existsInSelected || existsInBanned) return;
                         
                         if (currentMode === 'select') {
                             if (selectedSpirits[currentSide].length >= 6) return;
                             
-                            selectedSpirits[currentSide].push(spirit);
+                            if (currentMode === 'select' && currentSide) {
+                                const existingSpirit = selectedSpirits[currentSide].find(s => s.name === spiritName);
+                                if (!existingSpirit) {
+                                    // 计算当前总费数
+                                    const currentTotal = calculateSideCost(currentSide);
+                                    // 获取当前精灵的费数
+                                    function getSpiritCost(card) {
+                                        if (card.classList.contains('marked-yellow')) return 5;
+                                        if (card.classList.contains('marked-purple')) return 4;
+                                        if (card.classList.contains('marked-green')) return 3;
+                                        return 2;
+                                    }
+                                    const spiritCost = getSpiritCost(newCard);
+                                    // 检查是否超过上限
+                                    if (currentTotal + spiritCost <= costLimits[currentSide]) {
+                                        selectedSpirits[currentSide].push({name: spiritName, url: newCard.querySelector('img').src});
+                                    }
+                                }
+                            } else {
+                                selectedSpirits[currentSide].push({name: spiritName, url: newCard.querySelector('img').src});
+                            }
                             updateSelectedSlots();
                         } else {
                             if (bannedSpirits[currentSide].length >= 3) return;
                             
-                            bannedSpirits[currentSide].push(spirit);
+                            bannedSpirits[currentSide].push({name: spiritName, url: newCard.querySelector('img').src});
                             updateBannedSlots();
                         }
                         
@@ -659,9 +1211,9 @@ function clearAllMarks() {
                         // 添加撤回功能
                         const handleDisabledClick = () => {
                             if (currentMode === 'select') {
-                                selectedSpirits[currentSide] = selectedSpirits[currentSide].filter(s => s.name !== spirit.name);
+                                selectedSpirits[currentSide] = selectedSpirits[currentSide].filter(s => s.name !== spiritName);
                             } else {
-                                bannedSpirits[currentSide] = bannedSpirits[currentSide].filter(s => s.name !== spirit.name);
+                                bannedSpirits[currentSide] = bannedSpirits[currentSide].filter(s => s.name !== spiritName);
                             }
                             
                             // 恢复卡片
@@ -671,6 +1223,7 @@ function clearAllMarks() {
                             
                             updateSelectedSlots();
                             updateBannedSlots();
+                            updateCostDisplay();
                         };
                         
                         newCard.addEventListener('click', handleDisabledClick);
@@ -680,95 +1233,119 @@ function clearAllMarks() {
                 }
             });
             
-            // 清空该方的选择
-            selectedSpirits[side] = [];
-            bannedSpirits[side] = [];
-            updateSelectedSlots();
-            updateBannedSlots();
+            onSelectionChange();
         }
 
        // 开始随机选择
-    function startRandomSelection(side) {
-    if (isRandomAnimating) return;
-    if (selectedSpirits[side].length >= 6) return;
-
-    const availableSpirits = getAvailableSpirits(side);
-    if (availableSpirits.length === 0) return;
-
-    const randomBtn = side === 'red' ? redRandomBtn : blueRandomBtn;
-    randomBtn.classList.add('animating');
+       function startRandomSelection(side) {
+    if (isRandomAnimating || selectedSpirits[side].length >= 6) return;
+    
     isRandomAnimating = true;
-    disableRandomButtons();
-
-    const allCards = Array.from(document.querySelectorAll('.spirit-card:not(.disabled)'));
-    if (allCards.length === 0) {
-        finishSelection();
-        return;
-    }
-
-    const highlightClass = side === 'red' ? 'highlight-red' : 'highlight-blue';
-    let currentIndex = 0;
-    let startTime = Date.now();
+    randomSound = new Audio('suiji.mp3');
+    randomSound.volume = 0.5;
+    randomSound.loop = true;
+    randomSound.play();
     
-    // 随机总动画时间（5~8秒）
-    const totalDuration = 5000 + Math.random() * 3000;
-    // 减速开始时间（最后3秒）
-    const slowDownStart = totalDuration - 3000;
+    const randomBtn = (side === 'red') ? redRandomBtn : blueRandomBtn;
+    randomBtn.classList.add('animating');
     
-    let lastUpdateTime = startTime;
-    let currentInterval = 100; // 初始间隔100ms
+    const availableCards = Array.from(cardPool.querySelectorAll('.spirit-card:not(.disabled)'));
+    availableCards.sort((a, b) => {
+        // 按DOM位置排序：从上到下，从左到右
+        const rectA = a.getBoundingClientRect();
+        const rectB = b.getBoundingClientRect();
+        return rectA.top - rectB.top || rectA.left - rectB.left;
+    });
     
-    function updateHighlight() {
-        const now = Date.now();
-        const elapsed = now - startTime;
-        
-        // 移除之前的高亮
-        allCards.forEach(card => card.classList.remove(highlightClass));
-        
-        // 切换到下一张卡片
-        currentIndex = (currentIndex + 1) % allCards.length;
-        allCards[currentIndex].classList.add(highlightClass);
-        
-        // 在最后3秒开始减速
-        if (elapsed > slowDownStart) {
-            // 计算减速比例（0到1）
-            const slowDownProgress = (elapsed - slowDownStart) / 3000;
-            // 使用二次缓入函数让减速更自然
-            const easeInQuad = slowDownProgress * slowDownProgress;
-            // 间隔时间从100ms逐渐增加到500ms
-            currentInterval = 100 + easeInQuad * 400;
-        }
-        
-        // 检查是否结束
-        if (elapsed >= totalDuration) {
-            const finalCard = allCards[currentIndex];
-            const finalSpirit = spirits.find(s => s.name === finalCard.dataset.name);
-            
-            setTimeout(() => {
-                finalCard.classList.remove(highlightClass);
-                selectSpirit(finalSpirit, side);
-                finishSelection();
-            }, 500);
-            return;
-        }
-        
-        // 动态调整下一次更新的时间
-        const nextUpdate = lastUpdateTime + currentInterval;
-        const delay = Math.max(0, nextUpdate - now);
-        lastUpdateTime = now + delay;
-        
-        setTimeout(updateHighlight, delay);
-    }
-    
-    // 开始动画
-    updateHighlight();
-    
-    function finishSelection() {
+    if (availableCards.length === 0) {
+        alert('没有可用的精灵卡片，请上传或解除禁用。');
         isRandomAnimating = false;
         randomBtn.classList.remove('animating');
-        randomBtn.style.backgroundColor = '#FFD700';
-        enableRandomButtons();
+        if (randomSound) {
+            randomSound.pause();
+            randomSound = null;
+        }
+        return;
     }
+    
+    let currentIndex = 0;
+    const highlightClass = side === 'red' ? 'highlight-random-red' : 'highlight-random-blue';
+    let lastHighlightedCard = null;
+    
+    const highlightInterval = setInterval(() => {
+        if (lastHighlightedCard) {
+            lastHighlightedCard.classList.remove(highlightClass);
+        }
+        
+        lastHighlightedCard = availableCards[currentIndex];
+        lastHighlightedCard.classList.add(highlightClass);
+        
+        currentIndex = (currentIndex + 1) % availableCards.length;
+    }, 100); // 每100毫秒移动一次高亮
+    
+    setTimeout(() => {
+    clearInterval(highlightInterval);
+    if (lastHighlightedCard) {
+        lastHighlightedCard.classList.remove(highlightClass);
+    }
+    
+    // 随机选择最终卡片
+    const finalIndex = Math.floor(Math.random() * availableCards.length);
+    const targetCard = availableCards[finalIndex];
+    
+    // 添加放大效果
+    targetCard.classList.add('random-selected');
+    
+    // 2秒后执行选中操作
+    setTimeout(() => {
+        targetCard.classList.remove('random-selected');
+        const spirit = {
+            name: targetCard.dataset.name,
+            url: targetCard.querySelector('img').src
+        };
+        
+        if (side === 'red') {
+            selectedSpirits.red.push(spirit);
+            updateSelectedSlots();
+            updateCostDisplay();
+        } else {
+            selectedSpirits.blue.push(spirit);
+            updateSelectedSlots();
+            updateCostDisplay();
+        }
+        
+        // 禁用卡片
+        targetCard.classList.add('disabled');
+        
+        // 添加撤回功能
+        const handleDisabledClick = () => {
+            if (side === 'red') {
+                selectedSpirits.red = selectedSpirits.red.filter(s => s.name !== spirit.name);
+            } else {
+                selectedSpirits.blue = selectedSpirits.blue.filter(s => s.name !== spirit.name);
+            }
+            
+            // 恢复卡片
+            targetCard.classList.remove('disabled');
+            targetCard.removeEventListener('click', handleDisabledClick);
+            
+            updateSelectedSlots();
+            updateCostDisplay();
+        };
+        
+        targetCard.addEventListener('click', handleDisabledClick);
+        
+        onSelectionChange();
+    }, 2000);
+    
+    isRandomAnimating = false;
+    randomBtn.classList.remove('animating');
+    if (randomSound) {
+        randomSound.pause();
+        randomSound = null;
+        playSound('huode');
+    }
+}, 8000);
 }
 
         // 获取可用的精灵列表
@@ -815,7 +1392,33 @@ function clearAllMarks() {
         function selectSpirit(spirit, side) {
     if (selectedSpirits[side].length >= 6) return;
     
-    selectedSpirits[side].push(spirit);
+    if (!isRandomAnimating && !hasPlayedSelectSound) {
+        playSound('zixuan');
+        hasPlayedSelectSound = true;
+    }
+    
+    if (currentMode === 'select' && side) {
+                    const spiritName = card.dataset.name;
+                    const existingSpirit = selectedSpirits[side].find(s => s.name === spiritName);
+                    if (!existingSpirit) {
+                        // 计算当前总费数
+                        const currentTotal = calculateSideCost(side);
+                        // 获取当前精灵的费数
+                        function getSpiritCost(card) {
+                            if (card.classList.contains('marked-yellow')) return 5;
+                            if (card.classList.contains('marked-purple')) return 4;
+                            if (card.classList.contains('marked-green')) return 3;
+                            return 2;
+                        }
+                        const spiritCost = getSpiritCost(card);
+                        // 检查是否超过上限
+                        if (currentTotal + spiritCost <= costLimits[side]) {
+                            selectedSpirits[side].push(spirit);
+                        }
+                    }
+                } else {
+                    selectedSpirits[side].push(spirit);
+                }
     updateSelectedSlots();
     
     // 禁用卡片
@@ -841,7 +1444,28 @@ function clearAllMarks() {
                         if (currentMode === 'select') {
                             if (selectedSpirits[currentSide].length >= 6) return;
                             
+                            if (currentMode === 'select' && currentSide) {
+                    const spiritName = spiritElement.dataset.name;
+                    const existingSpirit = selectedSpirits[currentSide].find(s => s.name === spiritName);
+                    if (!existingSpirit) {
+                        // 计算当前总费数
+                        const currentTotal = calculateSideCost(currentSide);
+                        // 获取当前精灵的费数
+                        function getSpiritCost(card) {
+                            if (card.classList.contains('marked-yellow')) return 5;
+                            if (card.classList.contains('marked-purple')) return 4;
+                            if (card.classList.contains('marked-green')) return 3;
+                            return 2;
+                        }
+                        const spiritCost = getSpiritCost(spiritElement);
+                        // 检查是否超过上限
+                        if (currentTotal + spiritCost <= costLimits[currentSide]) {
                             selectedSpirits[currentSide].push(spirit);
+                        }
+                    }
+                } else {
+                    selectedSpirits[currentSide].push(spirit);
+                }
                             updateSelectedSlots();
                         } else {
                             if (bannedSpirits[currentSide].length >= 3) return;
@@ -861,6 +1485,7 @@ function clearAllMarks() {
                     
                     updateSelectedSlots();
                     updateBannedSlots();
+                    updateCostDisplay(); // Called because a selected spirit is revoked
                 };
                 
                 card.addEventListener('click', handleDisabledClick);
@@ -868,13 +1493,20 @@ function clearAllMarks() {
         }
 
         // 批量上传文件
-        function uploadFile(type) {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.multiple = true;
-            
-            input.onchange = e => {
+        let hasUploaded = false; // 添加全局变量记录是否首次上传
+let hasPlayedSelectSound = false; // 添加全局变量控制自选音效
+
+function uploadFile(type) {
+    if (!hasUploaded) {
+        playSound('kaimu');
+        hasUploaded = true;
+    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = true;
+    
+    input.onchange = e => {
                 const files = Array.from(e.target.files);
                 if (files.length === 0) return;
                 
@@ -911,6 +1543,27 @@ function clearAllMarks() {
             
             // 点击事件处理函数
             const handleClick = () => {
+                if (currentMode === 'select' && currentSide) {
+                    const spiritName = spiritElement.dataset.name;
+                    const existingSpirit = selectedSpirits[currentSide].find(s => s.name === spiritName);
+                    if (!existingSpirit) {
+                        // 计算当前总费数
+                        const currentTotal = calculateSideCost(currentSide);
+                        // 获取当前精灵的费数
+                        function getSpiritCost(card) {
+                            if (card.classList.contains('marked-yellow')) return 5;
+                            if (card.classList.contains('marked-purple')) return 4;
+                            if (card.classList.contains('marked-green')) return 3;
+                            return 2;
+                        }
+                        const spiritCost = getSpiritCost(spiritElement);
+                        // 检查是否超过上限
+                        if (currentTotal + spiritCost > costLimits[currentSide]) {
+                            alert(`费数不足！当前上限为${costLimits[currentSide]}，当前已使用${currentTotal}，无法添加${spiritCost}费的精灵`);
+                            return; // 阻止添加
+                        }
+                    }
+                }
                 if (markingMode) {
                     // 标记模式
                     spiritElement.classList.remove('marked-yellow', 'marked-purple', 'marked-green');
@@ -918,12 +1571,15 @@ function clearAllMarks() {
                     switch(markingMode) {
                         case 'yellow':
                             spiritElement.classList.add('marked-yellow');
+                            playSound('chuanshuo');
                             break;
                         case 'purple':
                             spiritElement.classList.add('marked-purple');
+                            playSound('shishi');
                             break;
                         case 'green':
                             spiritElement.classList.add('marked-green');
+                            playSound('xiyou'); // 播放 xiyou 音效
                             break;
                     }
                     updateCostDisplay();
@@ -937,11 +1593,38 @@ function clearAllMarks() {
                 const existsInBanned = bannedSpirits[currentSide].some(s => s.name === spirit.name);
                 if (existsInSelected || existsInBanned) return;
                 
+                // 自选或禁选模式时播放zixuan音效
+                if (currentMode === 'select' || currentMode === 'ban') {
+                    playSound('zixuan');
+                }
+                
                 if (currentMode === 'select') {
                     if (selectedSpirits[currentSide].length >= 6) return;
                     
+                    if (currentMode === 'select' && currentSide) {
+                    const spiritName = spiritElement.dataset.name;
+                    const existingSpirit = selectedSpirits[currentSide].find(s => s.name === spiritName);
+                    if (!existingSpirit) {
+                        // 计算当前总费数
+                        const currentTotal = calculateSideCost(currentSide);
+                        // 获取当前精灵的费数
+                        function getSpiritCost(card) {
+                            if (card.classList.contains('marked-yellow')) return 5;
+                            if (card.classList.contains('marked-purple')) return 4;
+                            if (card.classList.contains('marked-green')) return 3;
+                            return 2;
+                        }
+                        const spiritCost = getSpiritCost(spiritElement);
+                        // 检查是否超过上限
+                        if (currentTotal + spiritCost <= costLimits[currentSide]) {
+                            selectedSpirits[currentSide].push(spirit);
+                        }
+                    }
+                } else {
                     selectedSpirits[currentSide].push(spirit);
+                }
                     updateSelectedSlots();
+                    updateCostDisplay(); // Added call
                 } else {
                     if (bannedSpirits[currentSide].length >= 3) return;
                     
@@ -968,6 +1651,11 @@ function clearAllMarks() {
                     
                     updateSelectedSlots();
                     updateBannedSlots();
+                    // The original logic for removing from selectedSpirits in handleDisabledClick uses currentMode.
+                    // We call updateCostDisplay if that condition (currentMode === 'select') was met for removal.
+                    if (currentMode === 'select') { 
+                        updateCostDisplay();
+                    }
                 };
                 
                 spiritElement.addEventListener('click', handleDisabledClick);
@@ -1025,9 +1713,43 @@ function clearAllMarks() {
                 currentSide = side;
                 markingMode = null;
                 resetMarkButtons();
+                checkFullStatus();
             };
         }
     });
+    
+    // 检查自选位是否满员
+    onSelectionChange();
+}
+
+// 监听自选精灵变化的函数
+function onSelectionChange() {
+    // ... existing code ...
+    
+    // 检查是否双方都已选满6个精灵
+    if (selectedSpirits.red.length === 6 && selectedSpirits.blue.length === 6) {
+        playZhandouMusic();
+        isBattleReady = true;
+        
+        // 为所有精灵卡片添加战斗光效
+        document.querySelectorAll('.spirit-card').forEach(card => {
+            card.classList.add('glow-beat');
+            card.style.setProperty('--glow-color-1', 'rgba(255,0,0,0.7)');
+            card.style.setProperty('--glow-color-2', 'rgba(0,0,255,0.7)');
+        });
+    } else if (isBattleReady) {
+        // 如果战斗状态被打破(如重置)
+        if (zhandouAudio) {
+            zhandouAudio.pause();
+            zhandouAudio = null;
+        }
+        isBattleReady = false;
+        
+        // 移除所有战斗光效
+        document.querySelectorAll('.spirit-card').forEach(card => {
+            card.classList.remove('glow-beat');
+        });
+    }
 }
         // 更新禁选位显示
         function updateBannedSlots() {
@@ -1310,7 +2032,7 @@ function clearAllMarks() {
                         randomCard.style.position = 'fixed';
                         randomCard.style.top = '50%';
                         randomCard.style.left = '50%';
-                        randomCard.style.transform = 'translate(-50%, -50%) scale(10)';
+                        randomCard.style.transform = 'translate(-50%, -50%) scale(6)';
                         randomCard.style.zIndex = '999';
                         randomCard.style.transition = 'all 0.3s';
                         randomCard.style.filter = 'none';
