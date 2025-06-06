@@ -37,6 +37,9 @@
             cursor: pointer;
             transition: transform 0.3s;
             margin: 0 10px;
+            background-color: transparent !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
         }
 
         /* 图鉴按钮专属样式 */
@@ -48,6 +51,27 @@
 
         .pokedex-btn:hover {
             transform: scale(1.1);
+        }
+
+        .zoom-btn {
+            position: fixed !important;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            transform: translateY(-50%);
+            left: var(--pos-x, 30px);
+            top: var(--pos-y, 90%);
+            z-index: 1000;
+            background-color: transparent;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .zoom-btn:hover {
+            transform: translateY(-50%) scale(1.15);
+            background-color: transparent;
         }
 
         .header {
@@ -227,8 +251,10 @@
             width: 40px;
             height:40px;
             color: transparent !important;
-            padding: 0;
-            background-color: transparent;
+            padding: 0 !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
         }
 
         .ban-btn {
@@ -239,8 +265,10 @@
             width: 40px;
             height: 40px;
             color: transparent !important;
-            padding: 0;
-            background-color: transparent;
+            padding: 0 !important;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
         }
 
         .reset-btn {
@@ -251,8 +279,10 @@
             width: 40px;
             height: 40px;
             color: transparent !important;
-            padding: 0;
+            padding: 0 !important;
             background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
         }
 
         .random-btn {
@@ -262,29 +292,49 @@
             background-position: center 5px;
             width: 40px;
             height: 40px;
-            background-color: transparent;
+            background-color: transparent !important;
             position: relative;
+            box-shadow: none !important;
+            border: none !important;
         }
 
         .mark-yellow {
             background-image: url('images/icons/chuanshuo.png');
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
+            width: 40px;
+            height: 40px;
             color: #333;
+            background-color: transparent !important;
+            padding: 0 !important;
+            border: none !important;
         }
 
         .mark-purple {
             background-image: url('images/icons/shishi.png');
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
+            width: 40px;
+            height: 40px;
             color: white;
+            background-color: transparent !important;
+            padding: 0 !important;
+            border: none !important;
         }
 
         .mark-green {
             background-image: url('images/icons/xiyou.png');
-            background-size: cover;
+            background-size: contain;
+            background-repeat: no-repeat;
             background-position: center;
+            width: 40px;
+            height: 40px;
             color: white;
+            background-color: transparent !important;
+            padding: 0 !important;
+            border: none !important;
         }
 
         .clear-marks {
@@ -294,6 +344,9 @@
             color: white;
             width: 35px;
             height: 40px;
+            background-color: transparent !important;
+            padding: 0 !important;
+            border: none !important;
         }
 
 
@@ -307,6 +360,8 @@
             padding: 15px;
             border-radius: 8px;
             background-color: rgba(255, 255, 255, 0.45);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
         .selected-area {
@@ -351,6 +406,7 @@
             transition: all 0.3s;
             width: 80px;
             height: 80px;
+            will-change: transform; /* 优化动画性能 */
         }
 
         .spirit-card img {
@@ -534,9 +590,9 @@
 /* 高亮效果 */
         .spirit-card.highlight-red {
             box-shadow: 
-                0 0 10px 15x rgba(255, 0, 0, 0.6),
-                0 0 15x 10px rgba(255, 63, 53, 0.4),
-                0 0 20x 5px rgb(255, 0, 0);
+                0 0 10px 15px rgba(255, 0, 0, 0.6),
+                0 0 15px 10px rgba(255, 63, 53, 0.4),
+                0 0 20px 5px rgb(255, 0, 0);
             z-index: 99999 !important;
             position: relative;
             animation: pulse-red 1s infinite;
@@ -659,7 +715,11 @@
             </div>
         </div>
         
-        <div class="pool-area">
+        <div class="pool-area" style="position: relative;">
+            <div class="zoom-controls" style="position: absolute; right: 20px; bottom: 23px; display: flex; gap: 10px; z-index: 1000;">
+                <img src="images/icons/fangda.png" id="zoomInBtn" class="pokedex-btn" title="放大视图" style="position: absolute; right: 50px;">
+                <img src="images/icons/suoxiao.png" id="zoomOutBtn" class="pokedex-btn" title="缩小视图">
+            </div>
             <div class="upload-btns">
     <img src="images/icons/shangchuan.png" class="upload-spirit" title="" style="width: 40px; height: 40px; margin: 0 10px;">
     <img src="images/icons/liaotian.png" id="chatBtn" class="pokedex-btn" title="聊天室" style="margin: 0 10px;">
@@ -667,11 +727,11 @@
     <img src="images/icons/shanchu.png" id="deleteSpiritBtn" class="pokedex-btn" title="删除精灵" style="margin: 0 10px;">
 </div>
             <div class="card-pool"></div>
-            <div class="mark-btns">
+    <div class="mark-btns">
                 <button class="btn mark-yellow" id="markYellowBtn"/button>
                 <button class="btn mark-purple" id="markPurpleBtn"/button>
                 <button class="btn mark-green" id="markGreenBtn"/button>
-                <button class="btn clear-marks" id="clearMarksBtn"/button>
+                <button class="btn clear-marks" id="clearMarksBtn"></button>
             </div>
         </div>
         
@@ -722,6 +782,35 @@ let shanchuSound = new Audio('audio/btn/shanchu.mp3'); // 删除音效
         let currentAudio = null; // Moved and now truly global
 let zhandouAudio = null; // 添加战斗音乐变量
 
+// 自动加载所有精灵
+function loadAllPokemon() {
+    const cardPool = document.querySelector('.card-pool');
+    cardPool.innerHTML = '';
+
+    const pokemonList = [
+        'pokemon/Abomasnow-Mega.png',
+        'pokemon/Abomasnow.png',
+        'pokemon/Abra.png',
+        // 在此添加所有pokemon目录下的精灵...
+    ];
+
+    pokemonList.forEach(imgPath => {
+        const card = document.createElement('div');
+        card.className = 'spirit-card';
+        card.dataset.name = imgPath.split('/').pop().split('.')[0];
+        card.innerHTML = `<img src="${imgPath}">`;
+        card.addEventListener('click', handleSpiritClick);
+        cardPool.appendChild(card);
+    });
+}
+
+
+// 卡片缩放控制
+let cardSize = 80;
+const MIN_SIZE = 60;
+const MAX_SIZE = 120;
+const ZOOM_STEP = 10;
+
     // 示例：在添加精灵到自选位的逻辑中调用 onSelectionChange
         // 假设这里有一个添加精灵到自选位的函数
         function addToSelection(side, spirit) {
@@ -756,7 +845,32 @@ let zhandouAudio = null; // 添加战斗音乐变量
         return selectedSpirits.red.length === 6 && selectedSpirits.blue.length === 6;
     }
 
-    // 播放音效函数
+    // 添加缩放动画效果
+function addZoomEffect(type) {
+    const effect = document.createElement('div');
+    effect.className = `zoom-effect ${type}`;
+    document.body.appendChild(effect);
+    
+    setTimeout(() => {
+        effect.remove();
+    }, 500);
+}
+
+// 更新卡池布局
+function updateCardPoolLayout() {
+    const cardPool = document.querySelector('.card-pool');
+    cardPool.style.gridTemplateColumns = `repeat(auto-fill, minmax(${cardSize}px, 1fr))`;
+    
+    // 使用requestAnimationFrame优化性能
+    requestAnimationFrame(() => {
+        document.querySelectorAll('.spirit-card').forEach(card => {
+            card.style.width = `${cardSize}px`;
+            card.style.height = `${cardSize}px`;
+        });
+    });
+}
+
+// 播放音效函数
         function playSound(soundName) {
             // 如果是红蓝方音乐，不受此函数影响
             if (soundName === 'red-music' || soundName === 'blue-music') return;
@@ -779,6 +893,7 @@ let zhandouAudio = null; // 添加战斗音乐变量
         'feishu': 'audio/btn/feishu.MP3',
         'huode': 'audio/btn/huode.mp3',
         'jiaru': 'audio/btn/jiaru.MP3',
+        'jinxuan': 'audio/btn/jinxuan.MP3',
         'kaimu': 'audio/btn/kaimu.mp3',
         'liaotian': 'audio/btn/liaotian.MP3',
         'shanchu': 'audio/btn/shanchu.mp3',
@@ -960,6 +1075,52 @@ const pokedexSound = new Audio('audio/btn/tujian.MP3');
             // 事件监听器
             uploadSpiritBtn.addEventListener('click', () => uploadFile('spirit'));
 
+            // 缩放按钮事件
+            // 初始化全局音频变量
+        let isHolding = false;
+        let holdTimer = null;
+        let soundPlayed = false;
+
+        function handleZoom(direction) {
+            if (direction === 'in' && cardSize < MAX_SIZE) {
+                cardSize += ZOOM_STEP;
+                addZoomEffect('zoom-in');
+            } else if (direction === 'out' && cardSize > MIN_SIZE) {
+                cardSize -= ZOOM_STEP;
+                addZoomEffect('zoom-out');
+            }
+            updateCardPoolLayout();
+            
+            // 播放对应音效
+            const sound = direction === 'in' ? zoomInSound : zoomOutSound;
+            sound.currentTime = 0;
+            sound.play().catch(error => console.log('音效播放失败:', error));
+        }
+
+        function clearHold() {
+            clearInterval(holdTimer);
+            isHolding = false;
+            soundPlayed = false;
+        }
+
+        ['zoomInBtn', 'zoomOutBtn'].forEach(id => {
+            const el = document.getElementById(id);
+            const direction = id.includes('In') ? 'in' : 'out';
+            
+            el.addEventListener('mousedown', () => {
+                isHolding = true;
+                soundPlayed = false;
+                handleZoom(direction);
+                
+                holdTimer = setInterval(() => {
+                    if (isHolding) handleZoom(direction);
+                }, 100);
+            });
+
+            el.addEventListener('mouseup', clearHold);
+            el.addEventListener('mouseleave', clearHold);
+        });
+
 // 图鉴按钮事件
 pokedexBtn.addEventListener('click', function() {
     pokedexSound.play();
@@ -1064,23 +1225,32 @@ document.querySelectorAll('.pokedex-btn, .volume-text, #chatBtn').forEach(btn =>
                 });
             });
             
+            // 添加随机按钮音效处理
+            document.querySelectorAll('#redRandomBtn, #blueRandomBtn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const audio = new Audio('audio/btn/touzi.mp3');
+                    audio.play().catch(e => console.error('随机音效播放失败:', e));
+                });
+            });
+            
             banBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    playSound('anniu'); // 播放音效
+                    playSound('jinxuan'); // 修改为禁选专用音效
                     currentMode = 'ban';
                     currentSide = btn.closest('.red-side') ? 'red' : 'blue';
                     markingMode = null;
                     resetMarkButtons();
+                    onSelectionChange();
                 });
             });
             
             // 随机按钮事件
             redRandomBtn.addEventListener('click', () => {
-                playSound('anniu'); // 播放音效
+                playSound('touzi.mp3'); // 播放音效
                 startRandomSelection('red');
             });
             blueRandomBtn.addEventListener('click', () => {
-                playSound('anniu'); // 播放音效
+                playSound('touzi.mp3'); // 播放音效
                 startRandomSelection('blue');
             });
             
@@ -1129,7 +1299,11 @@ markGreenBtn.addEventListener('click', () => {
     handleButtonSequence('green');
     setMarkingMode('green');
 });
-            clearMarksBtn.addEventListener('click', clearAllMarks);
+            clearMarksBtn.addEventListener('click', function() {
+    const audio = new Audio('audio/btn/chexiao.mp3');
+    audio.play().catch(e => console.error('撤销音效播放失败:', e));
+    clearAllMarks();
+});
 
         // 红色方费数上限滑动事件
 // 红色方费数上限滑动事件
@@ -1753,7 +1927,7 @@ function uploadFile(type) {
                         const imgUrl = event.target.result;
                         const fileName = file.name.split('.')[0];
                         
-                        if (spirits.length >= 28) return;
+                        if (spirits.length >= 80) return;
                         const spirit = { name: fileName, url: imgUrl };
                         spirits.push(spirit);
                         renderSpirit(spirit);
@@ -1972,12 +2146,68 @@ function uploadFile(type) {
                 
                 selectedSpirits[side].forEach(spirit => {
                     const img = document.createElement('img');
-                    img.src = spirit.url;
-                    img.alt = spirit.name;
-                    img.style.width = '75px';
-                    img.style.height = '75px';
-                    img.style.objectFit = 'contain';
-                    slot.appendChild(img);
+                img.src = spirit.url;
+                img.alt = spirit.name;
+                img.style.width = '75px';
+                img.style.height = '75px';
+                img.style.objectFit = 'contain';
+                img.style.cursor = 'pointer';
+                img.addEventListener('click', () => {
+                    const pokemonName = spirit.name;
+                    const pokedexUrl = `https://dex.pokemonshowdown.com/pokemon/${pokemonName}`;
+                    
+                    const poolArea = document.querySelector('.pool-area');
+                    const poolRect = poolArea.getBoundingClientRect();
+                    
+                    const iframeContainer = document.createElement('div');
+                    iframeContainer.style.position = 'absolute';
+                    iframeContainer.style.left = `${poolRect.left}px`;
+                    iframeContainer.style.top = `${poolRect.top + window.scrollY}px`;
+                    iframeContainer.style.width = `${poolRect.width}px`;
+                    iframeContainer.style.height = `${poolRect.height}px`;
+                    iframeContainer.style.zIndex = '999999';
+                    iframeContainer.id = 'pokedex-container';
+                    
+                    const iframe = document.createElement('iframe');
+                    iframe.src = pokedexUrl;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    iframe.style.border = '5px solid red';
+                    iframe.style.borderImage = 'repeating-linear-gradient(45deg, red, black 10px) 5';
+                    iframe.style.backgroundColor = 'white';
+                    
+                    const closeBtn = document.createElement('button');
+                    closeBtn.textContent = '×';
+                    closeBtn.style.position = 'absolute';
+                    closeBtn.style.right = '10px';
+                    closeBtn.style.top = '10px';
+                    closeBtn.style.width = '30px';
+                    closeBtn.style.height = '30px';
+                    closeBtn.style.background = 'red';
+                    closeBtn.style.color = 'white';
+                    closeBtn.style.border = 'none';
+                    closeBtn.style.borderRadius = '50%';
+                    closeBtn.style.fontSize = '20px';
+                    closeBtn.style.cursor = 'pointer';
+                    closeBtn.style.zIndex = '1000000';
+                    
+                    function updatePokedexPosition() {
+                        const newRect = poolArea.getBoundingClientRect();
+                        iframeContainer.style.top = `${newRect.top + window.scrollY}px`;
+                    }
+                    
+                    window.addEventListener('scroll', updatePokedexPosition);
+                    
+                    closeBtn.addEventListener('click', function() {
+                        document.body.removeChild(iframeContainer);
+                        window.removeEventListener('scroll', updatePokedexPosition);
+                    });
+                    
+                    iframeContainer.appendChild(iframe);
+                    iframeContainer.appendChild(closeBtn);
+                    document.body.appendChild(iframeContainer);
+                });
+                slot.appendChild(img);
                 });
 
                 // 更新计数
@@ -2459,7 +2689,16 @@ function exitSpecialFullMode() {
             });
         }
 
-        init();
+        // 预加载音频
+        zoomInSound = new Audio('audio/btn/fangda.MP3');
+        zoomOutSound = new Audio('audio/btn/suoxiao.mp3');
+        zoomInSound.preload = 'auto';
+        zoomOutSound.preload = 'auto';
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAllPokemon();
+            init();
+        });
     </script>
 <!-- 添加在body底部 -->
 <div id="chatModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 10000;">
