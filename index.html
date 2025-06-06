@@ -782,29 +782,6 @@ let shanchuSound = new Audio('audio/btn/shanchu.mp3'); // 删除音效
         let currentAudio = null; // Moved and now truly global
 let zhandouAudio = null; // 添加战斗音乐变量
 
-// 自动加载所有精灵
-function loadAllPokemon() {
-    const cardPool = document.querySelector('.card-pool');
-    cardPool.innerHTML = '';
-
-    const pokemonList = [
-        'pokemon/Abomasnow-Mega.png',
-        'pokemon/Abomasnow.png',
-        'pokemon/Abra.png',
-        // 在此添加所有pokemon目录下的精灵...
-    ];
-
-    pokemonList.forEach(imgPath => {
-        const card = document.createElement('div');
-        card.className = 'spirit-card';
-        card.dataset.name = imgPath.split('/').pop().split('.')[0];
-        card.innerHTML = `<img src="${imgPath}">`;
-        card.addEventListener('click', handleSpiritClick);
-        cardPool.appendChild(card);
-    });
-}
-
-
 // 卡片缩放控制
 let cardSize = 80;
 const MIN_SIZE = 60;
@@ -2695,10 +2672,7 @@ function exitSpecialFullMode() {
         zoomInSound.preload = 'auto';
         zoomOutSound.preload = 'auto';
         
-        window.addEventListener('DOMContentLoaded', () => {
-            loadAllPokemon();
-            init();
-        });
+        init();
     </script>
 <!-- 添加在body底部 -->
 <div id="chatModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3); z-index: 10000;">
