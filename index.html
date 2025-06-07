@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>韩枫BP模拟器V2.0</title>
+    <title>韩枫BP模拟器V2.1</title>
     <style>
 
 /* 基础样式 */
@@ -686,7 +686,7 @@
             <img src="images/icons/logo.ico" class="site-logo">
             <div class="author">@韩枫有点帅</div>
         </div>
-        <h1>韩枫BP模拟器V2.0</h1>
+        <h1>韩枫BP模拟器V2.1</h1>
     </div>
     
     <div class="container">
@@ -836,6 +836,28 @@ function addZoomEffect(type) {
 // 更新卡池布局
 function updateCardPoolLayout() {
     const cardPool = document.querySelector('.card-pool');
+
+function generatePokemonCards() {
+    cardPool.innerHTML = '';
+
+    const pokemonList = [
+        'Abomasnow-Mega', 'Abomasnow', 'Abra', 'Absol-Mega',
+        'Zweilous'
+    ];
+
+    pokemonList.forEach(name => {
+        const card = document.createElement('div');
+        card.className = 'spirit-card';
+        card.dataset.name = name;
+        card.innerHTML = `
+            <img src="assets/pokemon/${name}.png" 
+                 alt="${name}" 
+                 title="${name}"
+                 loading="lazy">
+        `;
+        cardPool.appendChild(card);
+    });
+}
     cardPool.style.gridTemplateColumns = `repeat(auto-fill, minmax(${cardSize}px, 1fr))`;
     
     // 使用requestAnimationFrame优化性能
@@ -1038,6 +1060,28 @@ const pokedexSound = new Audio('audio/btn/tujian.MP3');
         const selectBtns = document.querySelectorAll('.select-btn');
         const banBtns = document.querySelectorAll('.ban-btn');
         const cardPool = document.querySelector('.card-pool');
+
+function generatePokemonCards() {
+    cardPool.innerHTML = '';
+
+    const pokemonList = [
+        'Abomasnow-Mega', 'Abomasnow', 'Abra', 'Absol-Mega',
+        'Zweilous'
+    ];
+
+    pokemonList.forEach(name => {
+        const card = document.createElement('div');
+        card.className = 'spirit-card';
+        card.dataset.name = name;
+        card.innerHTML = `
+            <img src="assets/pokemon/${name}.png" 
+                 alt="${name}" 
+                 title="${name}"
+                 loading="lazy">
+        `;
+        cardPool.appendChild(card);
+    });
+}
         const redRandomBtn = document.getElementById('redRandomBtn');
         const blueRandomBtn = document.getElementById('blueRandomBtn');
         const redResetBtn = document.getElementById('redResetBtn');
@@ -2672,6 +2716,7 @@ function exitSpecialFullMode() {
         zoomInSound.preload = 'auto';
         zoomOutSound.preload = 'auto';
         
+        generatePokemonCards();
         init();
     </script>
 <!-- 添加在body底部 -->
