@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const pokemonDir = path.join(__dirname, '../assets/pokemon');
+const pokemonDir = path.join(__dirname, '../pokemon');
 const outputFile = path.join(pokemonDir, 'pokemon-list.json');
 
 // 获取所有png文件（排除_temp临时文件）
