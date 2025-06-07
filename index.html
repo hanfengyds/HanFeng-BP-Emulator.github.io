@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>韩枫BP模拟器V2.1</title>
+    <title>韩枫BP模拟器V2.2</title>
     <style>
 
 /* 基础样式 */
@@ -686,7 +686,7 @@
             <img src="images/icons/logo.ico" class="site-logo">
             <div class="author">@韩枫有点帅</div>
         </div>
-        <h1>韩枫BP模拟器V2.1</h1>
+        <h1>韩枫BP模拟器V2.2</h1>
     </div>
     
     <div class="container">
@@ -763,6 +763,7 @@
 
     <script>
         // 全局变量
+        let pokemonPool = [];
         let currentMode = null; // 'select' or 'ban'
         let currentSide = null; // 'red' or 'blue'
         let spirits = [];
@@ -836,28 +837,6 @@ function addZoomEffect(type) {
 // 更新卡池布局
 function updateCardPoolLayout() {
     const cardPool = document.querySelector('.card-pool');
-
-function generatePokemonCards() {
-    cardPool.innerHTML = '';
-
-    const pokemonList = [
-        'Abomasnow-Mega', 'Abomasnow', 'Abra', 'Absol-Mega',
-        'Zweilous'
-    ];
-
-    pokemonList.forEach(name => {
-        const card = document.createElement('div');
-        card.className = 'spirit-card';
-        card.dataset.name = name;
-        card.innerHTML = `
-            <img src="assets/pokemon/${name}.png" 
-                 alt="${name}" 
-                 title="${name}"
-                 loading="lazy">
-        `;
-        cardPool.appendChild(card);
-    });
-}
     cardPool.style.gridTemplateColumns = `repeat(auto-fill, minmax(${cardSize}px, 1fr))`;
     
     // 使用requestAnimationFrame优化性能
@@ -1060,28 +1039,6 @@ const pokedexSound = new Audio('audio/btn/tujian.MP3');
         const selectBtns = document.querySelectorAll('.select-btn');
         const banBtns = document.querySelectorAll('.ban-btn');
         const cardPool = document.querySelector('.card-pool');
-
-function generatePokemonCards() {
-    cardPool.innerHTML = '';
-
-    const pokemonList = [
-        'Abomasnow-Mega', 'Abomasnow', 'Abra', 'Absol-Mega',
-        'Zweilous'
-    ];
-
-    pokemonList.forEach(name => {
-        const card = document.createElement('div');
-        card.className = 'spirit-card';
-        card.dataset.name = name;
-        card.innerHTML = `
-            <img src="assets/pokemon/${name}.png" 
-                 alt="${name}" 
-                 title="${name}"
-                 loading="lazy">
-        `;
-        cardPool.appendChild(card);
-    });
-}
         const redRandomBtn = document.getElementById('redRandomBtn');
         const blueRandomBtn = document.getElementById('blueRandomBtn');
         const redResetBtn = document.getElementById('redResetBtn');
@@ -1092,6 +1049,16 @@ function generatePokemonCards() {
         const clearMarksBtn = document.getElementById('clearMarksBtn');
 
         // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('pokemon/pokemon-list.json')
+                .then(response => response.json())
+                .then(data => {
+                    pokemonPool = data;
+                    initCardPool();
+                })
+                .catch(error => console.error('Error loading pokemon list:', error));
+        });
+
         function init() {
             // 事件监听器
             uploadSpiritBtn.addEventListener('click', () => uploadFile('spirit'));
@@ -1960,6 +1927,25 @@ function uploadFile(type) {
             input.click();
         }
 
+        // 初始化卡池
+        function initCardPool() {
+            const poolArea = document.querySelector('.card-pool');
+            poolArea.innerHTML = '';
+
+            pokemonPool.forEach(pokemon => {
+                const card = document.createElement('div');
+                card.className = 'spirit-card';
+                card.dataset.name = pokemon.name;
+                
+                const img = document.createElement('img');
+                img.src = `pokemon/${pokemon.image}`;
+                img.alt = pokemon.name;
+                
+                card.appendChild(img);
+                poolArea.appendChild(card);
+            });
+        }
+
         // 渲染精灵到卡池
         function renderSpirit(spirit) {
             const spiritElement = document.createElement('div');
@@ -2716,7 +2702,6 @@ function exitSpecialFullMode() {
         zoomInSound.preload = 'auto';
         zoomOutSound.preload = 'auto';
         
-        generatePokemonCards();
         init();
     </script>
 <!-- 添加在body底部 -->
